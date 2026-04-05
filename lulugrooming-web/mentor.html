@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LULU GROOMING — Mentor Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   DESIGN SYSTEM (동일 테마)
+══════════════════════════════════ */
+:root {
+  --bg:      #0a0a0a;
+  --s1:      #111111;
+  --s2:      #191919;
+  --s3:      #222222;
+  --border:  #2a2a2a;
+  --border2: #333333;
+  --text:    #f0ede8;
+  --text2:   #a09890;
+  --text3:   #5a5550;
+  --lime:    #c6f135;
+  --lime2:   #d8f960;
+  --red:     #e84040;
+  --orange:  #f07830;
+  --radius:  14px;
+  --radius-s:8px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif;
+  min-height:100dvh; max-width:480px;
+  margin:0 auto; overflow-x:hidden;
+  padding-bottom:40px;
+}
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* ── 탑바 ── */
+.topbar {
+  position:sticky; top:0; z-index:60;
+  background:rgba(10,10,10,0.92);
+  border-bottom:1px solid var(--border);
+  padding:0 20px; height:52px;
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter:blur(16px);
+}
+.brand {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:19px; letter-spacing:3px; color:var(--text); line-height:1;
+}
+.brand em { color:var(--lime); font-style:normal; }
+.brand-dot {
+  display:inline-block; width:6px; height:6px;
+  background:var(--lime); border-radius:50%;
+  margin-left:3px; vertical-align:middle; margin-bottom:4px;
+}
+.btn-back-home {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; color:var(--text3); text-transform:uppercase;
+  background:none; border:1px solid var(--border2);
+  padding:5px 10px; border-radius:4px; cursor:pointer; transition:all 0.2s;
+  text-decoration:none;
+}
+.btn-back-home:hover { color:var(--lime); border-color:var(--lime); }
+
+/* ── 히어로 ── */
+.mentor-hero {
+  padding:28px 20px 24px;
+  border-bottom:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+.mentor-hero::before {
+  content:'STUDIO'; position:absolute; right:-14px; top:-5px;
+  font-family:'Bebas Neue',sans-serif; font-size:100px;
+  color:rgba(198,241,53,0.04); pointer-events:none; line-height:1;
+  letter-spacing:-3px;
+}
+.hero-eye {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px; color:var(--lime);
+  text-transform:uppercase; margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.hero-eye::before {
+  content:''; display:inline-block; width:18px; height:1px; background:var(--lime);
+}
+.mentor-hero h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px; letter-spacing:1px; line-height:0.95; color:var(--text);
+  margin-bottom:6px;
+}
+.mentor-hero h1 em { color:var(--lime); font-style:normal; }
+.mentor-hero p {
+  font-size:12px; color:var(--text3); letter-spacing:0.2px; line-height:1.5;
+}
+
+/* ── 섹션 공통 ── */
+.ms {
+  padding:24px 20px 0;
+}
+.ms-head {
+  display:flex; align-items:center; gap:8px; margin-bottom:16px;
+}
+.ms-dot { width:5px; height:5px; background:var(--lime); border-radius:50%; flex-shrink:0; }
+.ms-label {
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:2px; color:var(--text3); text-transform:uppercase;
+}
+.ms-line { flex:1; height:1px; background:var(--border); }
+
+/* ── 프로필 섹션 ── */
+.profile-row {
+  display:flex; gap:16px; align-items:flex-start; margin-bottom:20px;
+}
+.avatar-upload {
+  width:100px; height:100px; flex-shrink:0;
+  background:var(--s1); border:2px dashed var(--border2);
+  border-radius:16px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; transition:all 0.3s; position:relative; overflow:hidden;
+}
+.avatar-upload:hover { border-color:var(--lime); }
+.avatar-upload.has-img { border-style:solid; border-color:var(--lime); }
+.avatar-upload img {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; border-radius:14px;
+}
+.avatar-upload .placeholder {
+  font-family:'DM Mono',monospace; font-size:8px;
+  color:var(--text3); text-align:center; line-height:1.4; letter-spacing:0.5px;
+}
+.avatar-upload .placeholder-ico { font-size:24px; margin-bottom:2px; }
+.avatar-upload input { display:none; }
+
+.profile-fields { flex:1; display:flex; flex-direction:column; gap:10px; }
+.pf-input {
+  width:100%; padding:10px 12px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif; font-size:13px;
+  outline:none; transition:border-color 0.2s;
+}
+.pf-input:focus { border-color:rgba(198,241,53,0.5); }
+.pf-input::placeholder { color:var(--text3); font-size:12px; }
+select.pf-input { -webkit-appearance:none; appearance:none; cursor:pointer; }
+select.pf-input option { background:var(--s1); color:var(--text); }
+
+.pf-textarea {
+  width:100%; padding:10px 12px; min-height:70px; resize:vertical;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif; font-size:13px;
+  outline:none; transition:border-color 0.2s;
+}
+.pf-textarea:focus { border-color:rgba(198,241,53,0.5); }
+.pf-textarea::placeholder { color:var(--text3); font-size:12px; }
+
+.btn-save-profile {
+  width:100%; padding:14px;
+  background:var(--lime); border:none; border-radius:var(--radius);
+  color:#0a0a0a; font-family:'Bebas Neue',sans-serif;
+  font-size:18px; letter-spacing:3px; cursor:pointer;
+  transition:all 0.2s; margin-top:4px;
+}
+.btn-save-profile:hover { background:var(--lime2); }
+
+/* ── 영상 업로드 ── */
+.video-upload-zone {
+  border:2px dashed var(--border2);
+  border-radius:var(--radius); padding:30px 20px;
+  text-align:center; cursor:pointer;
+  transition:all 0.3s; margin-bottom:16px;
+  position:relative;
+}
+.video-upload-zone:hover { border-color:var(--lime); }
+.video-upload-zone.drag-over {
+  border-color:var(--lime); background:rgba(198,241,53,0.03);
+}
+.video-upload-zone input { display:none; }
+.vuz-ico { font-size:32px; margin-bottom:6px; }
+.vuz-title {
+  font-family:'DM Mono',monospace; font-size:11px;
+  color:var(--text2); letter-spacing:1px; margin-bottom:4px;
+}
+.vuz-sub {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px;
+}
+
+/* 업로드 프로그레스 */
+.upload-progress {
+  display:none; margin-bottom:16px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius-s); padding:12px 14px;
+}
+.upload-progress.active { display:block; }
+.up-bar-wrap {
+  height:4px; background:var(--s3); border-radius:2px; overflow:hidden; margin-bottom:6px;
+}
+.up-bar {
+  height:100%; width:0%; background:var(--lime);
+  border-radius:2px; transition:width 0.3s;
+}
+.up-text {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px;
+}
+
+/* 비디오 카드 리스트 */
+.video-pad-list { display:flex; flex-direction:column; gap:12px; }
+
+.video-pad {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  transition:border-color 0.2s;
+}
+.video-pad:hover { border-color:var(--border2); }
+.video-pad.dragging { opacity:0.5; border-color:var(--lime); }
+
+.vp-preview {
+  position:relative; width:100%; aspect-ratio:16/9;
+  background:var(--s3); cursor:pointer; overflow:hidden;
+}
+.vp-preview video {
+  width:100%; height:100%; object-fit:cover;
+}
+.vp-play-btn {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.3); transition:background 0.2s;
+}
+.vp-play-btn:hover { background:rgba(0,0,0,0.1); }
+.vp-play-ico {
+  width:48px; height:48px; background:rgba(198,241,53,0.9);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:20px; color:#0a0a0a;
+}
+.vp-order {
+  position:absolute; top:8px; left:8px;
+  font-family:'Bebas Neue',sans-serif; font-size:14px;
+  color:var(--lime); background:rgba(10,10,10,0.7);
+  padding:2px 8px; border-radius:4px; letter-spacing:1px;
+}
+.vp-drag-handle {
+  position:absolute; top:8px; right:8px;
+  cursor:grab; padding:4px 6px;
+  background:rgba(10,10,10,0.7); border-radius:4px;
+  font-size:14px; color:var(--text3);
+}
+.vp-drag-handle:active { cursor:grabbing; }
+
+.vp-body { padding:12px 14px; }
+.vp-title-input {
+  width:100%; padding:8px 10px; margin-bottom:8px;
+  background:var(--s2); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:500;
+  outline:none; transition:border-color 0.2s;
+}
+.vp-title-input:focus { border-color:rgba(198,241,53,0.5); }
+.vp-title-input::placeholder { color:var(--text3); }
+.vp-comment {
+  width:100%; padding:8px 10px; min-height:52px; resize:vertical;
+  background:var(--s2); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text2);
+  font-family:'Noto Sans KR',sans-serif; font-size:12px;
+  outline:none; transition:border-color 0.2s; line-height:1.5;
+}
+.vp-comment:focus { border-color:rgba(198,241,53,0.5); }
+.vp-comment::placeholder { color:var(--text3); }
+
+.vp-actions {
+  display:flex; gap:8px; margin-top:10px;
+}
+.vp-btn {
+  flex:1; padding:9px;
+  border:none; border-radius:var(--radius-s);
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:1px; text-transform:uppercase;
+  cursor:pointer; transition:all 0.2s; font-weight:500;
+}
+.vp-btn-save {
+  background:var(--lime); color:#0a0a0a;
+}
+.vp-btn-save:hover { background:var(--lime2); }
+.vp-btn-del {
+  background:var(--s2); color:var(--text3); border:1px solid var(--border) !important;
+  flex:0.4;
+}
+.vp-btn-del:hover { color:var(--red); border-color:var(--red) !important; }
+
+.video-empty {
+  text-align:center; padding:30px 20px;
+  font-family:'DM Mono',monospace; font-size:11px;
+  color:var(--text3); letter-spacing:0.5px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+
+/* ── 비디오 모달 ── */
+.video-modal {
+  display:none; position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,0.95);
+  align-items:center; justify-content:center;
+  flex-direction:column;
+}
+.video-modal.active { display:flex; }
+.video-modal video {
+  max-width:100%; max-height:80vh; border-radius:var(--radius);
+}
+.vm-close {
+  margin-top:16px; background:none; border:1px solid var(--border2);
+  color:var(--text3); font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:2px; padding:8px 20px;
+  border-radius:var(--radius-s); cursor:pointer; transition:all 0.2s;
+}
+.vm-close:hover { color:var(--lime); border-color:var(--lime); }
+
+/* ── 홈 미리보기 ── */
+.preview-box {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px;
+  margin-bottom:16px;
+}
+.preview-box-label {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:12px; display:flex; align-items:center; gap:6px;
+}
+.preview-box-label::before {
+  content:''; width:12px; height:1px; background:var(--text3);
+}
+
+/* 미리보기 멘토 카드 */
+.prev-mentor-card {
+  background:var(--s2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px;
+  display:flex; gap:12px; align-items:flex-start;
+  margin-bottom:12px;
+}
+.prev-avatar {
+  width:48px; height:48px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--s3),var(--s2));
+  border:1px solid var(--border2); border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--lime);
+  overflow:hidden;
+}
+.prev-avatar img { width:100%; height:100%; object-fit:cover; }
+.prev-name { font-size:13px; font-weight:700; margin-bottom:2px; }
+.prev-spec {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px; margin-bottom:4px;
+}
+.prev-intro { font-size:11px; color:var(--text2); line-height:1.4; }
+
+/* 미리보기 숏폼 슬라이드 */
+.prev-shorts-scroll {
+  display:flex; gap:10px; overflow-x:auto;
+  padding-bottom:4px; scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+}
+.prev-shorts-scroll::-webkit-scrollbar { display:none; }
+.prev-short-card {
+  flex-shrink:0; width:120px; scroll-snap-align:start;
+  border-radius:var(--radius-s); overflow:hidden;
+  position:relative; cursor:pointer;
+  border:1px solid var(--border);
+}
+.prev-short-card video {
+  width:100%; aspect-ratio:9/16; object-fit:cover; display:block;
+  pointer-events:none;
+}
+.prev-short-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding:20px 8px 8px;
+}
+.prev-short-name {
+  font-size:10px; font-weight:600; color:var(--text); margin-bottom:2px;
+}
+.prev-short-comment {
+  font-size:9px; color:var(--text2); line-height:1.3;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* ── 토스트 ── */
+.toast {
+  position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(60px);
+  background:var(--lime); color:#0a0a0a;
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:500;
+  letter-spacing:1px; padding:10px 24px;
+  border-radius:999px; z-index:300;
+  opacity:0; transition:all 0.3s ease; pointer-events:none;
+  white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ── 탑바 ── -->
+<div class="topbar">
+  <div class="brand">LULU <em>GROOMING</em><span class="brand-dot"></span></div>
+  <a class="btn-back-home" href="index.html">← Home</a>
+</div>
+
+<!-- ── 히어로 ── -->
+<div class="mentor-hero">
+  <div class="hero-eye">Mentor Studio</div>
+  <h1>나만의<br><em>STYLE</em><br>STUDIO</h1>
+  <p>프로필을 꾸미고 스타일링 영상을 올려<br>홈에서 유저에게 추천되세요.</p>
+</div>
+
+<!-- ═══════════════════════════════
+     1. 프로필 섹션
+═══════════════════════════════ -->
+<div class="ms">
+  <div class="ms-head">
+    <div class="ms-dot"></div>
+    <div class="ms-label">Profile</div>
+    <div class="ms-line"></div>
+  </div>
+
+  <div class="profile-row">
+    <div class="avatar-upload" id="avatarUpload" onclick="document.getElementById('avatarInput').click()">
+      <div class="placeholder" id="avatarPlaceholder">
+        <div class="placeholder-ico">📷</div>
+        <div>프로필 사진<br>업로드</div>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*">
+    </div>
+    <div class="profile-fields">
+      <input class="pf-input" id="pfName" placeholder="이름 (예: 정우혁)">
+      <select class="pf-input" id="pfSpec">
+        <option value="">전문 분야 선택</option>
+        <option value="남성 헤어스타일링">남성 헤어스타일링</option>
+        <option value="여성 헤어스타일링">여성 헤어스타일링</option>
+        <option value="남녀 모두">남녀 모두</option>
+        <option value="바버샵 전문">바버샵 전문</option>
+        <option value="메이크업">메이크업</option>
+        <option value="코디·스타일링">코디·스타일링</option>
+        <option value="탈모 케어">탈모 케어</option>
+        <option value="향수·퍼퓨머리">향수·퍼퓨머리</option>
+      </select>
+    </div>
+  </div>
+
+  <select class="pf-input" id="pfCareer" style="width:100%;margin-bottom:10px;">
+    <option value="">경력 선택</option>
+    <option value="1년 미만">1년 미만</option>
+    <option value="1~3년">1~3년</option>
+    <option value="3~5년">3~5년</option>
+    <option value="5~10년">5~10년</option>
+    <option value="10년 이상">10년 이상</option>
+  </select>
+
+  <textarea class="pf-textarea" id="pfIntro" placeholder="한줄 소개를 적어주세요 (예: 투블럭·리젠트컷 전문, 얼굴형 맞춤 스타일링)"></textarea>
+
+  <button class="btn-save-profile" onclick="saveProfile()">SAVE PROFILE</button>
+</div>
+
+<!-- ═══════════════════════════════
+     2. 스타일링 영상 업로드
+═══════════════════════════════ -->
+<div class="ms" style="margin-top:8px;">
+  <div class="ms-head">
+    <div class="ms-dot"></div>
+    <div class="ms-label">Styling Shorts</div>
+    <div class="ms-line"></div>
+  </div>
+
+  <div class="video-upload-zone" id="videoUploadZone"
+       onclick="document.getElementById('videoFileInput').click()"
+       ondragover="event.preventDefault(); this.classList.add('drag-over')"
+       ondragleave="this.classList.remove('drag-over')"
+       ondrop="handleVideoDrop(event)">
+    <div class="vuz-ico">🎬</div>
+    <div class="vuz-title">영상 업로드</div>
+    <div class="vuz-sub">MP4 · MOV · WEBM — MAX 100MB — 클릭 또는 드래그</div>
+    <input type="file" id="videoFileInput" accept="video/mp4,video/mov,video/webm,video/quicktime" multiple>
+  </div>
+
+  <div class="upload-progress" id="uploadProgress">
+    <div class="up-bar-wrap"><div class="up-bar" id="upBar"></div></div>
+    <div class="up-text" id="upText">업로드 중...</div>
+  </div>
+
+  <div class="video-pad-list" id="videoPadList"></div>
+</div>
+
+<!-- ═══════════════════════════════
+     3. 홈 미리보기
+═══════════════════════════════ -->
+<div class="ms" style="margin-top:8px; padding-bottom:20px;">
+  <div class="ms-head">
+    <div class="ms-dot"></div>
+    <div class="ms-label">Home Preview</div>
+    <div class="ms-line"></div>
+  </div>
+
+  <div class="preview-box">
+    <div class="preview-box-label">홈에서 이렇게 보여요 — 멘토 카드</div>
+    <div id="prevMentorCard"></div>
+  </div>
+
+  <div class="preview-box">
+    <div class="preview-box-label">홈에서 이렇게 보여요 — 숏폼 영상</div>
+    <div class="prev-shorts-scroll" id="prevShortsScroll"></div>
+  </div>
+</div>
+
+<!-- 비디오 모달 -->
+<div class="video-modal" id="videoModal">
+  <video id="modalVideo" controls></video>
+  <button class="vm-close" onclick="closeModal()">✕ CLOSE</button>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  데이터 관리
+// ══════════════════════════════════════════
+const PROFILE_KEY = 'gr-mentor-profile';
+const VIDEOS_KEY  = 'gr-mentor-videos';
+
+function loadProfile() {
+  return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+}
+function saveProfileData(data) {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+}
+function loadVideos() {
+  return JSON.parse(localStorage.getItem(VIDEOS_KEY) || '[]');
+}
+function saveVideosData(arr) {
+  localStorage.setItem(VIDEOS_KEY, JSON.stringify(arr));
+}
+
+// 토스트
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ══════════════════════════════════════════
+//  프로필
+// ══════════════════════════════════════════
+let profileImage = null; // base64
+
+document.getElementById('avatarInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('이미지는 5MB 이하만 가능합니다'); return; }
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    profileImage = ev.target.result;
+    renderAvatar();
+  };
+  reader.readAsDataURL(file);
+});
+
+function renderAvatar() {
+  const wrap = document.getElementById('avatarUpload');
+  const ph = document.getElementById('avatarPlaceholder');
+  if (profileImage) {
+    wrap.classList.add('has-img');
+    let img = wrap.querySelector('img');
+    if (!img) { img = document.createElement('img'); wrap.appendChild(img); }
+    img.src = profileImage;
+    ph.style.display = 'none';
+  } else {
+    wrap.classList.remove('has-img');
+    const img = wrap.querySelector('img');
+    if (img) img.remove();
+    ph.style.display = '';
+  }
+}
+
+function saveProfile() {
+  const name = document.getElementById('pfName').value.trim();
+  const spec = document.getElementById('pfSpec').value;
+  const career = document.getElementById('pfCareer').value;
+  const intro = document.getElementById('pfIntro').value.trim();
+  if (!name) { showToast('이름을 입력해 주세요'); return; }
+  if (!spec) { showToast('전문 분야를 선택해 주세요'); return; }
+  const data = { name, spec, career, intro, avatar: profileImage, updatedAt: Date.now() };
+  saveProfileData(data);
+  showToast('프로필이 저장되었습니다 ✓');
+  renderPreview();
+}
+
+// 기존 프로필 로드
+function initProfile() {
+  const p = loadProfile();
+  if (!p) return;
+  document.getElementById('pfName').value = p.name || '';
+  document.getElementById('pfSpec').value = p.spec || '';
+  document.getElementById('pfCareer').value = p.career || '';
+  document.getElementById('pfIntro').value = p.intro || '';
+  if (p.avatar) { profileImage = p.avatar; renderAvatar(); }
+}
+
+// ══════════════════════════════════════════
+//  영상 업로드
+// ══════════════════════════════════════════
+let mentorVideos = []; // [{id, title, comment, dataUrl, order}]
+
+document.getElementById('videoFileInput').addEventListener('change', function(e) {
+  handleVideoFiles(e.target.files);
+  this.value = '';
+});
+
+function handleVideoDrop(e) {
+  e.preventDefault();
+  document.getElementById('videoUploadZone').classList.remove('drag-over');
+  handleVideoFiles(e.dataTransfer.files);
+}
+
+function handleVideoFiles(files) {
+  if (!files.length) return;
+  const arr = Array.from(files).filter(f => {
+    if (!f.type.startsWith('video/')) { showToast('영상 파일만 업로드 가능합니다'); return false; }
+    if (f.size > 100 * 1024 * 1024) { showToast(f.name + ': 100MB 초과'); return false; }
+    return true;
+  });
+  if (!arr.length) return;
+  processVideoQueue(arr, 0);
+}
+
+function processVideoQueue(files, idx) {
+  if (idx >= files.length) {
+    document.getElementById('uploadProgress').classList.remove('active');
+    renderVideoPads();
+    renderPreview();
+    showToast(files.length + '개 영상이 추가되었습니다');
+    return;
+  }
+  const file = files[idx];
+  const prog = document.getElementById('uploadProgress');
+  const bar = document.getElementById('upBar');
+  const txt = document.getElementById('upText');
+  prog.classList.add('active');
+  txt.textContent = (idx+1) + '/' + files.length + ' — ' + file.name;
+
+  const reader = new FileReader();
+  reader.onprogress = function(e) {
+    if (e.lengthComputable) {
+      const pct = Math.round(e.loaded / e.total * 100);
+      bar.style.width = pct + '%';
+    }
+  };
+  reader.onload = function(ev) {
+    bar.style.width = '100%';
+    mentorVideos.push({
+      id: Date.now() + '_' + idx,
+      title: file.name.replace(/\.[^.]+$/, ''),
+      comment: '',
+      dataUrl: ev.target.result,
+      order: mentorVideos.length
+    });
+    saveVideosData(mentorVideos);
+    setTimeout(() => processVideoQueue(files, idx + 1), 200);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── 비디오 패드 렌더 ──
+function renderVideoPads() {
+  const list = document.getElementById('videoPadList');
+  if (!mentorVideos.length) {
+    list.innerHTML = '<div class="video-empty">아직 업로드된 영상이 없습니다</div>';
+    return;
+  }
+  list.innerHTML = mentorVideos.map((v, i) => `
+    <div class="video-pad" draggable="true" data-idx="${i}"
+         ondragstart="vpDragStart(event,${i})" ondragover="event.preventDefault()"
+         ondrop="vpDrop(event,${i})">
+      <div class="vp-preview" onclick="openModal('${v.id}')">
+        <video src="${v.dataUrl}" preload="metadata"></video>
+        <div class="vp-play-btn"><div class="vp-play-ico">▶</div></div>
+        <div class="vp-order">#${i+1}</div>
+        <div class="vp-drag-handle" title="드래그하여 순서 변경">☰</div>
+      </div>
+      <div class="vp-body">
+        <input class="vp-title-input" value="${escapeHtml(v.title)}" placeholder="영상 제목"
+               onchange="updateVideo('${v.id}','title',this.value)">
+        <textarea class="vp-comment" placeholder="짧은 코멘트를 달아주세요 (예: 5분 투블럭 스타일링 비법!)"
+                  onchange="updateVideo('${v.id}','comment',this.value)">${escapeHtml(v.comment)}</textarea>
+        <div class="vp-actions">
+          <button class="vp-btn vp-btn-save" onclick="saveVideoMeta('${v.id}')">SAVE</button>
+          <button class="vp-btn vp-btn-del" onclick="deleteVideo('${v.id}')">DEL</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateVideo(id, field, value) {
+  const v = mentorVideos.find(x => x.id === id);
+  if (v) v[field] = value;
+}
+function saveVideoMeta(id) {
+  saveVideosData(mentorVideos);
+  renderPreview();
+  showToast('영상 정보가 저장되었습니다 ✓');
+}
+function deleteVideo(id) {
+  mentorVideos = mentorVideos.filter(x => x.id !== id);
+  mentorVideos.forEach((v,i) => v.order = i);
+  saveVideosData(mentorVideos);
+  renderVideoPads();
+  renderPreview();
+  showToast('영상이 삭제되었습니다');
+}
+
+// 드래그 순서 변경
+let vpDragIdx = null;
+function vpDragStart(e, idx) {
+  vpDragIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+}
+function vpDrop(e, targetIdx) {
+  e.preventDefault();
+  if (vpDragIdx === null || vpDragIdx === targetIdx) return;
+  const item = mentorVideos.splice(vpDragIdx, 1)[0];
+  mentorVideos.splice(targetIdx, 0, item);
+  mentorVideos.forEach((v,i) => v.order = i);
+  saveVideosData(mentorVideos);
+  renderVideoPads();
+  renderPreview();
+  vpDragIdx = null;
+}
+
+// ── 비디오 모달 ──
+function openModal(id) {
+  const v = mentorVideos.find(x => x.id === id);
+  if (!v) return;
+  const modal = document.getElementById('videoModal');
+  const vid = document.getElementById('modalVideo');
+  vid.src = v.dataUrl;
+  modal.classList.add('active');
+  vid.play();
+}
+function closeModal() {
+  const modal = document.getElementById('videoModal');
+  const vid = document.getElementById('modalVideo');
+  vid.pause(); vid.src = '';
+  modal.classList.remove('active');
+}
+
+// ══════════════════════════════════════════
+//  홈 미리보기
+// ══════════════════════════════════════════
+function renderPreview() {
+  renderPreviewCard();
+  renderPreviewShorts();
+}
+
+function renderPreviewCard() {
+  const el = document.getElementById('prevMentorCard');
+  const p = loadProfile();
+  if (!p || !p.name) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--text3);text-align:center;padding:12px;">프로필을 저장하면 미리보기가 표시됩니다</div>';
+    return;
+  }
+  const initials = p.name.substring(0,1);
+  const avatarContent = p.avatar
+    ? `<img src="${p.avatar}" alt="">`
+    : initials;
+  el.innerHTML = `
+    <div class="prev-mentor-card">
+      <div class="prev-avatar">${avatarContent}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="prev-name">${escapeHtml(p.name)}</div>
+        <div class="prev-spec">${escapeHtml(p.spec || '')}${p.career ? ' · ' + escapeHtml(p.career) : ''}</div>
+        ${p.intro ? '<div class="prev-intro">' + escapeHtml(p.intro) + '</div>' : ''}
+      </div>
+    </div>`;
+}
+
+function renderPreviewShorts() {
+  const el = document.getElementById('prevShortsScroll');
+  const p = loadProfile();
+  const vids = loadVideos();
+  if (!vids.length) {
+    el.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:12px;">영상을 업로드하면 미리보기가 표시됩니다</div>';
+    return;
+  }
+  el.innerHTML = vids.map(v => `
+    <div class="prev-short-card" onclick="openModal('${v.id}')">
+      <video src="${v.dataUrl}" preload="metadata" muted></video>
+      <div class="prev-short-overlay">
+        <div class="prev-short-name">${escapeHtml(p?.name || 'Mentor')}</div>
+        <div class="prev-short-comment">${escapeHtml(v.comment || v.title)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── 유틸 ──
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════
+//  초기화
+// ══════════════════════════════════════════
+initProfile();
+mentorVideos = loadVideos();
+renderVideoPads();
+renderPreview();
+</script>
+</body>
+</html>

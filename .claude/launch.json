@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lulugrooming-fullstack",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["node_modules/http-server/bin/http-server", "lulugrooming-web", "-p", "8788", "-c-1"],
+      "port": 8788
+    },
+    {
+      "name": "lulugrooming-static",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["node_modules/http-server/bin/http-server", "lulugrooming-web", "-p", "3000", "-c-1"],
+      "port": 3000
+    }
+  ]
+}

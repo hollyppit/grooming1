@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LULU GROOMING — 룰루 그루밍</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   DESIGN SYSTEM
+   Theme: Dark editorial barbershop
+   Palette: Obsidian + Warm white + Electric lime
+══════════════════════════════════ */
+:root {
+  --bg:      #0a0a0a;
+  --s1:      #111111;
+  --s2:      #191919;
+  --s3:      #222222;
+  --border:  #2a2a2a;
+  --border2: #333333;
+  --text:    #f0ede8;
+  --text2:   #a09890;
+  --text3:   #5a5550;
+  --lime:    #c6f135;
+  --lime2:   #d8f960;
+  --red:     #e84040;
+  --orange:  #f07830;
+  --radius:  14px;
+  --radius-s:8px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif;
+  min-height:100dvh; max-width:480px;
+  margin:0 auto; overflow-x:hidden;
+}
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* ── 페이지 ── */
+.page { display:none; padding-bottom:88px; }
+.page.active { display:block; }
+
+/* ─────────────────────────────────
+   TOPBAR
+───────────────────────────────── */
+.topbar {
+  position:sticky; top:0; z-index:60;
+  background:rgba(10,10,10,0.92);
+  border-bottom:1px solid var(--border);
+  padding:0 20px; height:52px;
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter:blur(16px);
+}
+.brand {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:19px; letter-spacing:3px; color:var(--text); line-height:1;
+}
+.brand em { color:var(--lime); font-style:normal; }
+.brand-dot {
+  display:inline-block; width:6px; height:6px;
+  background:var(--lime); border-radius:50%;
+  margin-left:3px; vertical-align:middle; margin-bottom:4px;
+}
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.btn-admin-link {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; color:var(--text3); text-transform:uppercase;
+  background:none; border:1px solid var(--border2);
+  padding:5px 10px; border-radius:4px; cursor:pointer; transition:all 0.2s;
+}
+.btn-admin-link:hover { color:var(--lime); border-color:var(--lime); }
+
+/* ─────────────────────────────────
+   TAB BAR
+───────────────────────────────── */
+.tab-bar {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:480px;
+  background:rgba(10,10,10,0.96);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex; z-index:100;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+.tab-btn {
+  flex:1; padding:13px 8px 11px;
+  background:none; border:none; color:var(--text3);
+  cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; gap:3px; transition:color 0.2s; position:relative;
+}
+.tab-btn .ico { font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center; }
+.tab-btn .ico svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.tab-btn.active .ico svg { stroke-width:2.2; }
+
+/* SVG 아이콘 공통 */
+.svg-ico { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
+.svg-ico svg { stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.cat-btn .cat-ico svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.cat-btn.active .cat-ico svg { stroke-width:2.2; }
+.tab-btn span:last-child {
+  font-size:9px; letter-spacing:1px;
+  font-family:'DM Mono',monospace; text-transform:uppercase;
+}
+.tab-btn.active { color:var(--lime); }
+.tab-btn.active::before {
+  content:''; position:absolute; top:0; left:20%; right:20%;
+  height:2px; background:var(--lime); border-radius:0 0 2px 2px;
+}
+
+/* ═══════════════════════════════════════
+   FIX PAGE — 외출 전 스타일링 솔루션
+═══════════════════════════════════════ */
+
+/* 히어로 */
+.fix-hero {
+  padding:24px 20px 20px;
+  position:relative; overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.fix-hero::before {
+  content:'FIX'; position:absolute; right:-10px; top:0;
+  font-family:'Bebas Neue',sans-serif; font-size:120px;
+  color:rgba(198,241,53,0.04); pointer-events:none; line-height:1;
+  letter-spacing:-4px;
+}
+.fix-eyebrow {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px; color:var(--lime);
+  text-transform:uppercase; margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.fix-eyebrow::before {
+  content:''; display:inline-block; width:18px; height:1px; background:var(--lime);
+}
+.fix-hero h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:38px; letter-spacing:1px; line-height:0.95; color:var(--text);
+  margin-bottom:6px;
+}
+.fix-hero h1 em { color:var(--lime); font-style:normal; }
+.fix-hero p {
+  font-size:12px; color:var(--text3); letter-spacing:0.2px; line-height:1.5;
+}
+
+/* 카테고리 선택 바 */
+.cat-bar {
+  display:flex; gap:0;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto; scrollbar-width:none;
+  position:sticky; top:52px; z-index:40;
+  background:var(--bg);
+}
+.cat-bar::-webkit-scrollbar { display:none; }
+.cat-btn {
+  flex-shrink:0;
+  padding:0 16px; height:44px;
+  background:none; border:none; border-bottom:2px solid transparent;
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--text3); cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:6px; white-space:nowrap;
+}
+.cat-btn .cat-ico { font-size:14px; }
+.cat-btn.active { color:var(--lime); border-bottom-color:var(--lime); }
+
+/* 패널 컨테이너 */
+.fix-panels { position:relative; }
+.fix-panel { display:none; padding:20px 20px 0; }
+.fix-panel.active { display:block; }
+
+/* 섹션 타이틀 */
+.panel-section-title {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text3); margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.panel-section-title::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+/* 옵션 칩 그룹 */
+.opt-group { margin-bottom:18px; }
+.opt-chips {
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.opt-chip {
+  padding:7px 14px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:999px; font-size:12px; color:var(--text2);
+  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.opt-chip.sel {
+  background:rgba(198,241,53,0.1);
+  border-color:rgba(198,241,53,0.4);
+  color:var(--lime); font-weight:500;
+}
+
+/* 직접 입력 인풋 */
+.direct-input-wrap { margin-bottom:18px; position:relative; }
+.direct-input {
+  width:100%; padding:12px 14px 12px 38px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif; font-size:13px;
+  outline:none; transition:border-color 0.2s;
+}
+.direct-input:focus { border-color:rgba(198,241,53,0.5); }
+.direct-input::placeholder { color:var(--text3); font-size:12px; }
+.direct-input-icon {
+  position:absolute; left:13px; top:50%; transform:translateY(-50%);
+  font-size:14px; pointer-events:none; opacity:0.5;
+}
+
+/* 선택 요약 태그 */
+.sel-summary {
+  display:flex; flex-wrap:wrap; gap:5px; margin-bottom:20px;
+  min-height:28px;
+}
+.sel-tag {
+  display:flex; align-items:center; gap:5px;
+  padding:4px 10px; background:var(--s2);
+  border:1px solid var(--border2); border-radius:6px;
+  font-size:11px; color:var(--text2); animation:tagPop 0.2s ease;
+}
+@keyframes tagPop {
+  from { transform:scale(0.85); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+.sel-tag .tag-x {
+  color:var(--text3); cursor:pointer; font-size:13px; line-height:1;
+  transition:color 0.15s;
+}
+.sel-tag .tag-x:hover { color:var(--red); }
+
+/* FIX 실행 버튼 */
+.btn-fix-run {
+  width:100%; padding:16px;
+  background:var(--lime); border:none; border-radius:var(--radius);
+  color:#0a0a0a; font-family:'Bebas Neue',sans-serif;
+  font-size:22px; letter-spacing:3px; cursor:pointer;
+  transition:all 0.2s; margin-bottom:20px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  position:relative; overflow:hidden;
+}
+.btn-fix-run::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform:translateX(-100%); transition:transform 0.5s ease;
+}
+.btn-fix-run:hover::before { transform:translateX(100%); }
+.btn-fix-run:hover { background:var(--lime2); transform:translateY(-1px); }
+.btn-fix-run:active { transform:translateY(0); }
+.btn-fix-run:disabled { opacity:0.35; cursor:not-allowed; transform:none; }
+.btn-fix-run .run-ico { font-size:18px; }
+
+/* ──────────────────────────────
+   결과 화면 (RESULT)
+────────────────────────────── */
+.result-page { display:none; }
+.result-page.active { display:block; }
+
+.result-topbar {
+  height:52px; padding:0 20px;
+  display:flex; align-items:center; gap:12px;
+  border-bottom:1px solid var(--border);
+  position:sticky; top:52px; background:var(--bg); z-index:30;
+}
+.btn-back {
+  width:34px; height:34px;
+  background:var(--s2); border:1px solid var(--border);
+  border-radius:50%; color:var(--text); font-size:15px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:background 0.2s;
+}
+.btn-back:hover { background:var(--s3); }
+.result-topbar-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--lime);
+}
+.result-topbar-cats {
+  flex:1; font-size:12px; color:var(--text2); letter-spacing:-0.2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* AI 솔루션 카드 */
+.solution-card {
+  margin:16px 20px 0;
+  background:linear-gradient(135deg, var(--s1) 0%, rgba(30,30,15,0.8) 100%);
+  border:1px solid rgba(198,241,53,0.2);
+  border-radius:var(--radius); padding:18px;
+  position:relative; overflow:hidden;
+}
+.solution-card::before {
+  content:''; position:absolute; top:-30px; right:-30px;
+  width:100px; height:100px;
+  background:radial-gradient(circle, rgba(198,241,53,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.solution-card-head {
+  display:flex; align-items:center; gap:8px; margin-bottom:12px;
+}
+.solution-card-ico {
+  width:28px; height:28px;
+  background:var(--lime); border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.solution-card-label {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--lime);
+}
+.solution-card-body {
+  font-size:13px; color:var(--text2); line-height:1.75;
+  white-space:pre-wrap;
+}
+.solution-loading {
+  display:flex; align-items:center; gap:10px;
+  font-family:'DM Mono',monospace; font-size:10px;
+  color:var(--text3); letter-spacing:1px;
+}
+.sol-dots span {
+  display:inline-block; width:4px; height:4px;
+  background:var(--lime); border-radius:50%; margin:0 1px;
+  animation:db 1.2s ease-in-out infinite;
+}
+.sol-dots span:nth-child(2) { animation-delay:.2s; }
+.sol-dots span:nth-child(3) { animation-delay:.4s; }
+@keyframes db { 0%,80%,100%{transform:translateY(0);opacity:.35} 40%{transform:translateY(-4px);opacity:1} }
+
+/* 결과 섹션 */
+.result-section { padding:20px 20px 0; }
+.result-sec-head {
+  display:flex; align-items:center; gap:8px; margin-bottom:12px;
+}
+.result-sec-dot { width:5px; height:5px; background:var(--lime); border-radius:50%; flex-shrink:0; }
+.result-sec-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text3);
+}
+.result-sec-line { flex:1; height:1px; background:var(--border); }
+
+/* 멘토 카드 */
+.mentor-card {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px;
+  margin-bottom:8px; display:flex; gap:12px; align-items:flex-start;
+  transition:border-color 0.2s;
+}
+.mentor-card:hover { border-color:var(--border2); }
+.mentor-avatar {
+  width:44px; height:44px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--s3),var(--s2));
+  border:1px solid var(--border2); border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--lime);
+}
+.mentor-body { flex:1; min-width:0; }
+.mentor-name { font-size:13px; font-weight:700; margin-bottom:2px; letter-spacing:-0.2px; }
+.mentor-spec {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px; margin-bottom:6px;
+}
+.mentor-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.mtag {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:0.5px;
+  padding:2px 7px; border-radius:4px;
+  background:var(--s2); border:1px solid var(--border2); color:var(--text2);
+}
+.mtag.verified {
+  background:rgba(198,241,53,0.08); border-color:rgba(198,241,53,0.25); color:var(--lime);
+}
+.btn-contact {
+  padding:7px 12px; flex-shrink:0;
+  background:var(--lime); border:none; border-radius:var(--radius-s);
+  color:#0a0a0a; font-family:'DM Mono',monospace;
+  font-size:9px; font-weight:bold; letter-spacing:1px;
+  cursor:pointer; transition:background 0.2s; text-transform:uppercase;
+}
+.btn-contact:hover { background:var(--lime2); }
+
+/* ── 홈 멘토 추천 슬라이더 ── */
+.home-mentor-section {
+  padding:28px 0 8px;
+  border-top:1px solid var(--border);
+  margin-top:8px;
+}
+.home-mentor-head {
+  display:flex; align-items:center; gap:10px;
+  padding:0 20px; margin-bottom:14px;
+}
+.home-mentor-head-dot {
+  width:5px; height:5px; background:var(--lime); border-radius:50%; flex-shrink:0;
+}
+.home-mentor-head-label {
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:2px; color:var(--text3); text-transform:uppercase;
+}
+.home-mentor-head-line { flex:1; height:1px; background:var(--border); }
+.home-mentor-head-more {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px;
+  color:var(--lime); cursor:pointer; text-transform:uppercase;
+  background:none; border:none; white-space:nowrap;
+  transition:opacity 0.2s;
+}
+.home-mentor-head-more:hover { opacity:0.7; }
+.home-mentor-scroll {
+  display:flex; gap:10px; overflow-x:auto;
+  padding:0 20px 16px; scroll-snap-type:x mandatory;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.home-mentor-scroll::-webkit-scrollbar { display:none; }
+.hm-card {
+  flex-shrink:0; width:200px; scroll-snap-align:start;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px 14px;
+  transition:border-color 0.2s; cursor:pointer;
+  position:relative; overflow:hidden;
+}
+.hm-card:hover { border-color:var(--border2); }
+.hm-card-verified {
+  position:absolute; top:10px; right:10px;
+  font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.5px;
+  padding:2px 6px; border-radius:4px;
+  background:rgba(198,241,53,0.08); border:1px solid rgba(198,241,53,0.25); color:var(--lime);
+  text-transform:uppercase;
+}
+.hm-avatar {
+  width:48px; height:48px;
+  background:linear-gradient(135deg,var(--s3),var(--s2));
+  border:1px solid var(--border2); border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--lime);
+  margin-bottom:10px;
+}
+.hm-name { font-size:13px; font-weight:700; margin-bottom:2px; letter-spacing:-0.2px; }
+.hm-spec {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px; margin-bottom:6px;
+}
+.hm-desc {
+  font-size:11px; color:var(--text2); line-height:1.5;
+  margin-bottom:10px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.hm-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.hm-avatar img { width:100%; height:100%; object-fit:cover; border-radius:12px; }
+
+/* ── 홈 숏폼 슬라이더 ── */
+.home-shorts-section {
+  padding:20px 0 8px;
+  border-top:1px solid var(--border);
+}
+.home-shorts-scroll {
+  display:flex; gap:10px; overflow-x:auto;
+  padding:0 20px 16px; scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+}
+.home-shorts-scroll::-webkit-scrollbar { display:none; }
+.hs-card {
+  flex-shrink:0; width:140px; scroll-snap-align:start;
+  border-radius:var(--radius); overflow:hidden;
+  position:relative; cursor:pointer;
+  border:1px solid var(--border);
+  transition:border-color 0.2s;
+}
+.hs-card:hover { border-color:var(--border2); }
+.hs-card video {
+  width:100%; aspect-ratio:9/16; object-fit:cover; display:block;
+  pointer-events:none;
+}
+.hs-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding:24px 10px 10px;
+}
+.hs-mentor-row {
+  display:flex; align-items:center; gap:6px; margin-bottom:4px;
+}
+.hs-mentor-avatar {
+  width:20px; height:20px; border-radius:6px;
+  background:var(--s3); border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:9px; color:var(--lime);
+  overflow:hidden; flex-shrink:0;
+}
+.hs-mentor-avatar img { width:100%; height:100%; object-fit:cover; }
+.hs-mentor-name {
+  font-size:10px; font-weight:600; color:var(--text);
+}
+.hs-comment {
+  font-size:9px; color:var(--text2); line-height:1.3;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.hs-play-badge {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:36px; height:36px; background:rgba(198,241,53,0.85);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:#0a0a0a; opacity:0; transition:opacity 0.2s;
+}
+.hs-card:hover .hs-play-badge { opacity:1; }
+
+/* ── 홈 비디오 모달 ── */
+.home-video-modal {
+  display:none; position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,0.95);
+  align-items:center; justify-content:center;
+  flex-direction:column;
+}
+.home-video-modal.active { display:flex; }
+.home-video-modal video {
+  max-width:100%; max-height:80vh; border-radius:var(--radius);
+}
+.hvm-close {
+  margin-top:16px; background:none; border:1px solid var(--border2);
+  color:var(--text3); font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:2px; padding:8px 20px;
+  border-radius:var(--radius-s); cursor:pointer; transition:all 0.2s;
+}
+.hvm-close:hover { color:var(--lime); border-color:var(--lime); }
+
+/* YouTube 카드 */
+.yt-loading {
+  display:flex; align-items:center; gap:10px; padding:10px 0;
+  font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:1px;
+}
+.yt-dots span {
+  display:inline-block; width:4px; height:4px;
+  background:var(--text3); border-radius:50%; margin:0 1px;
+  animation:db 1.2s ease-in-out infinite;
+}
+.yt-dots span:nth-child(2) { animation-delay:.2s; }
+.yt-dots span:nth-child(3) { animation-delay:.4s; }
+
+.yt-list { display:flex; flex-direction:column; gap:8px; padding-bottom:24px; }
+.yt-card {
+  display:flex; gap:0;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden; cursor:pointer;
+  color:var(--text); transition:border-color 0.2s;
+}
+.yt-card:hover { border-color:var(--border2); }
+.yt-thumb {
+  width:108px; aspect-ratio:16/9; flex-shrink:0;
+  background:var(--s2); position:relative; overflow:hidden;
+}
+.yt-thumb-img {
+  width:100%; height:100%; object-fit:cover;
+}
+.yt-thumb-play {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.3);
+  font-size:20px; color:white; text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  opacity:0; transition:opacity 0.2s;
+}
+.yt-card:hover .yt-thumb-play { opacity:1; }
+.yt-thumb-fallback {
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  font-size:22px; background:linear-gradient(135deg,#111,#1a1a1a);
+}
+.yt-body { padding:10px 12px 10px 10px; flex:1; min-width:0; }
+.yt-title {
+  font-size:12px; font-weight:600; line-height:1.45;
+  display:-webkit-box; -webkit-line-clamp:2;
+  -webkit-box-orient:vertical; overflow:hidden;
+  margin-bottom:3px; letter-spacing:-0.2px;
+}
+.yt-channel {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.5px; color:var(--text3);
+}
+.yt-mentor-pip {
+  display:inline-block; margin-top:4px;
+  background:rgba(198,241,53,0.1); border:1px solid rgba(198,241,53,0.2);
+  color:var(--lime); font-family:'DM Mono',monospace;
+  font-size:8px; letter-spacing:1px; text-transform:uppercase;
+  padding:2px 6px; border-radius:3px;
+}
+
+/* ═══════════════════════════════════════
+   SAVED (즐겨찾기 컬렉션) PAGE
+═══════════════════════════════════════ */
+.saved-hero {
+  padding:24px 20px 16px; position:relative; overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.saved-hero::before {
+  content:'SAVED'; position:absolute; right:-8px; top:4px;
+  font-family:'Bebas Neue',sans-serif; font-size:90px; letter-spacing:-3px;
+  color:rgba(255,255,255,0.025); pointer-events:none; line-height:1;
+}
+.hero-eyebrow {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px;
+  color:var(--lime); text-transform:uppercase; margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.hero-eyebrow::before {
+  content:''; display:inline-block; width:18px; height:1px; background:var(--lime);
+}
+.saved-hero h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px; letter-spacing:1px; line-height:0.95; color:var(--text);
+}
+.saved-hero h1 em { color:var(--lime); font-style:normal; }
+
+/* 즐겨찾기 툴바 */
+.saved-toolbar {
+  display:flex; align-items:center; gap:8px;
+  padding:12px 20px; border-bottom:1px solid var(--border);
+}
+.saved-breadcrumb {
+  flex:1; display:flex; align-items:center; gap:4px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--text3);
+  overflow:hidden; white-space:nowrap;
+}
+.saved-breadcrumb span { cursor:pointer; transition:color 0.2s; }
+.saved-breadcrumb span:hover { color:var(--lime); }
+.saved-breadcrumb .bc-sep { color:var(--border2); cursor:default; }
+.saved-breadcrumb .bc-current { color:var(--text); cursor:default; }
+.btn-saved-tool {
+  flex-shrink:0; padding:6px 12px;
+  background:none; border:1px solid var(--border2);
+  border-radius:var(--radius-s); cursor:pointer;
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px;
+  text-transform:uppercase; color:var(--text3); transition:all 0.2s;
+}
+.btn-saved-tool:hover { color:var(--lime); border-color:var(--lime); }
+.btn-saved-tool.active { background:var(--lime); color:#0a0a0a; border-color:var(--lime); }
+
+/* 즐겨찾기 그리드 */
+.saved-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px 20px 20px;
+  min-height:200px;
+}
+.saved-empty {
+  grid-column:1/-1; text-align:center; padding:40px 20px;
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--text3);
+  letter-spacing:0.5px; line-height:1.6;
+}
+
+/* 폴더 카드 */
+.fav-folder {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:18px 14px;
+  cursor:pointer; transition:all 0.2s; position:relative;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px; min-height:120px;
+}
+.fav-folder:hover { border-color:var(--border2); transform:translateY(-2px); }
+.fav-folder.drag-over { border-color:var(--lime); background:rgba(198,241,53,0.04); }
+.fav-folder-ico { font-size:32px; }
+.fav-folder-name {
+  font-size:12px; font-weight:500; color:var(--text2); text-align:center;
+  max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.fav-folder-count {
+  font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:0.5px;
+}
+.fav-folder-name-input {
+  width:100%; text-align:center; padding:4px 6px;
+  background:var(--s2); border:1px solid var(--lime);
+  border-radius:4px; color:var(--text); font-size:12px;
+  outline:none; font-family:'Noto Sans KR',sans-serif;
+}
+
+/* 영상 카드 */
+.fav-card {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden; cursor:pointer;
+  transition:all 0.2s; position:relative;
+}
+.fav-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.fav-card.dragging { opacity:0.4; border-color:var(--lime); }
+.fav-thumb {
+  aspect-ratio:16/9; background:var(--s3); position:relative; overflow:hidden;
+}
+.fav-thumb img, .fav-thumb video {
+  width:100%; height:100%; object-fit:cover;
+}
+.fav-thumb::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+}
+.fav-play {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:32px; height:32px; background:rgba(198,241,53,0.85);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:12px; color:#0a0a0a; z-index:2;
+  opacity:0; transition:opacity 0.2s;
+}
+.fav-card:hover .fav-play { opacity:1; }
+.fav-type-badge {
+  position:absolute; top:6px; left:6px; z-index:2;
+  font-family:'DM Mono',monospace; font-size:7px; letter-spacing:0.5px;
+  padding:2px 6px; border-radius:3px; text-transform:uppercase;
+  background:rgba(0,0,0,0.6); color:var(--text2);
+}
+.fav-card-info { padding:8px 10px 10px; }
+.fav-card-title {
+  font-size:12px; font-weight:600; letter-spacing:-0.2px; margin-bottom:2px;
+  display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.fav-card-meta {
+  font-family:'DM Mono',monospace; font-size:9px;
+  color:var(--text3); letter-spacing:0.5px;
+}
+.fav-card-title-input {
+  width:100%; padding:4px 6px;
+  background:var(--s2); border:1px solid var(--lime);
+  border-radius:4px; color:var(--text); font-size:12px;
+  outline:none; font-family:'Noto Sans KR',sans-serif;
+  margin-bottom:2px;
+}
+
+/* 편집 모드 */
+.edit-mode .fav-card, .edit-mode .fav-folder {
+  cursor:grab; animation:editShake 0.3s ease;
+}
+.edit-mode .fav-card:active, .edit-mode .fav-folder:active { cursor:grabbing; }
+@keyframes editShake {
+  0%,100% { transform:rotate(0); }
+  25% { transform:rotate(-0.5deg); }
+  75% { transform:rotate(0.5deg); }
+}
+.fav-edit-overlay {
+  display:none; position:absolute; top:6px; right:6px; z-index:5;
+  gap:4px;
+}
+.edit-mode .fav-edit-overlay { display:flex; }
+.fav-edit-btn {
+  width:26px; height:26px;
+  background:rgba(10,10,10,0.8); border:1px solid var(--border2);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+  font-size:12px; cursor:pointer; transition:all 0.2s; color:var(--text3);
+}
+.fav-edit-btn:hover { background:var(--s2); color:var(--text); }
+.fav-edit-btn.del:hover { color:var(--red); border-color:var(--red); }
+
+/* ☆ 즐겨찾기 버튼 (영상 카드용) */
+.btn-fav-star {
+  position:absolute; top:6px; right:6px; z-index:5;
+  width:28px; height:28px;
+  background:rgba(10,10,10,0.6); border:none; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:pointer; transition:all 0.2s;
+  color:var(--text3);
+}
+.btn-fav-star:hover { background:rgba(10,10,10,0.8); color:var(--lime); }
+.btn-fav-star.active { color:var(--lime); }
+
+/* 상세 페이지 (유지) */
+.section { padding:20px 20px 0; }
+.section-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.section-head-line { flex:1; height:1px; background:var(--border); }
+.section-head-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text3); flex-shrink:0;
+}
+.section-head-accent { width:5px; height:5px; background:var(--lime); border-radius:50%; flex-shrink:0; }
+
+/* ═══════════════════════════════════════
+   APPLY PAGE
+═══════════════════════════════════════ */
+.apply-hero {
+  padding:28px 20px 24px; position:relative; overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.apply-hero::after {
+  content:'MENTOR'; position:absolute; right:-6px; bottom:-10px;
+  font-family:'Bebas Neue',sans-serif; font-size:80px;
+  color:rgba(255,255,255,0.02); pointer-events:none; line-height:1; letter-spacing:-2px;
+}
+.apply-hero-eye {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--lime); margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.apply-hero-eye::before {
+  content:''; display:inline-block; width:18px; height:1px; background:var(--lime);
+}
+.apply-hero h2 {
+  font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px;
+  line-height:0.95; color:var(--text); margin-bottom:10px;
+}
+.apply-hero h2 em { color:var(--lime); font-style:normal; }
+.apply-hero p { font-size:13px; color:var(--text2); line-height:1.65; }
+.benefit-row { display:flex; gap:6px; margin-top:14px; flex-wrap:wrap; }
+.benefit-badge {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px;
+  text-transform:uppercase; padding:5px 10px; border-radius:4px;
+  border:1px solid var(--border2); color:var(--text3);
+}
+.apply-form { padding:22px 20px; }
+.field { margin-bottom:14px; }
+.field > label {
+  display:block; font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text3); margin-bottom:7px;
+}
+.field input,.field select,.field textarea {
+  width:100%; padding:12px 14px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius-s); color:var(--text);
+  font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none;
+  transition:border-color 0.2s; -webkit-appearance:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus { border-color:var(--lime); }
+.field input::placeholder,.field textarea::placeholder { color:var(--text3); }
+.field select option { background:var(--s1); }
+.field textarea { min-height:80px; resize:vertical; line-height:1.65; }
+.field-row { display:flex; gap:10px; }
+.field-row .field { flex:1; }
+.upload-zone {
+  border:1.5px dashed var(--border2); border-radius:var(--radius);
+  padding:20px 16px; text-align:center; cursor:pointer;
+  transition:all 0.2s; background:var(--s1); position:relative;
+}
+.upload-zone:hover,.upload-zone.drag-over {
+  border-color:var(--lime); background:rgba(198,241,53,0.04);
+}
+.upload-zone input[type=file] {
+  position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+}
+.upload-zone-icon { font-size:24px; margin-bottom:5px; filter:grayscale(0.4); }
+.upload-zone-label { font-size:13px; color:var(--text2); font-weight:500; margin-bottom:2px; }
+.upload-zone-sub {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--text3);
+}
+.file-preview-list { display:flex; flex-direction:column; gap:5px; margin-top:7px; }
+.file-preview-item {
+  background:var(--s2); border:1px solid var(--border); border-radius:var(--radius-s);
+  padding:8px 11px; display:flex; align-items:center; gap:9px;
+}
+.file-preview-thumb {
+  width:36px; height:36px; flex-shrink:0; border-radius:6px; background:var(--s3);
+  display:flex; align-items:center; justify-content:center; font-size:16px; overflow:hidden;
+}
+.file-preview-thumb img { width:100%; height:100%; object-fit:cover; }
+.file-preview-body { flex:1; min-width:0; }
+.file-preview-name {
+  font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.file-preview-size {
+  font-family:'DM Mono',monospace; font-size:8px; color:var(--text3); letter-spacing:0.5px;
+}
+.btn-file-remove {
+  background:none; border:none; color:var(--text3);
+  cursor:pointer; font-size:15px; flex-shrink:0; transition:color 0.2s;
+}
+.btn-file-remove:hover { color:var(--red); }
+.yt-add-row { display:flex; gap:8px; margin-bottom:7px; }
+.yt-add-row input { flex:1; }
+.btn-yt-add {
+  width:44px; height:44px; background:var(--lime); border:none;
+  border-radius:var(--radius-s); color:#0a0a0a; font-size:20px;
+  font-weight:bold; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0; transition:background 0.2s;
+}
+.btn-yt-add:hover { background:var(--lime2); }
+.yt-tag-list { display:flex; flex-wrap:wrap; gap:5px; }
+.yt-tag {
+  padding:4px 9px 4px 11px; background:var(--s2); border:1px solid var(--border2);
+  border-radius:6px; font-size:10px; color:var(--text2);
+  display:flex; align-items:center; gap:5px;
+}
+.yt-tag button {
+  background:none; border:none; color:var(--text3);
+  cursor:pointer; font-size:13px; padding:0; line-height:1; transition:color 0.2s;
+}
+.yt-tag button:hover { color:var(--red); }
+.btn-submit {
+  width:100%; padding:15px; background:var(--lime); border:none;
+  border-radius:var(--radius); color:#0a0a0a;
+  font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px;
+  cursor:pointer; transition:background 0.2s; margin-top:8px;
+}
+.btn-submit:hover { background:var(--lime2); }
+.apply-done { display:none; text-align:center; padding:60px 24px; }
+.apply-done.show { display:block; }
+.apply-done-icon { font-size:52px; margin-bottom:14px; }
+.apply-done-title {
+  font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:8px;
+}
+.apply-done-sub { font-size:14px; color:var(--text2); line-height:1.7; }
+
+/* ═══════════════════════════════════════
+   ADMIN PAGE
+═══════════════════════════════════════ */
+.admin-lock {
+  min-height:60dvh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:40px 24px;
+}
+.admin-lock-brand {
+  font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:3px;
+  color:var(--text); margin-bottom:4px;
+}
+.admin-lock-sub {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:32px;
+}
+.pin-row { display:flex; gap:10px; margin-bottom:18px; }
+.pin-input {
+  width:52px; height:52px; text-align:center;
+  background:var(--s1); border:1px solid var(--border); border-radius:var(--radius-s);
+  color:var(--text); font-size:20px; font-weight:700; outline:none;
+  transition:border-color 0.2s; font-family:'DM Mono',monospace;
+}
+.pin-input:focus { border-color:var(--lime); }
+.btn-pin {
+  padding:13px 38px; background:var(--lime); border:none; border-radius:var(--radius);
+  color:#0a0a0a; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px;
+  cursor:pointer; transition:background 0.2s;
+}
+.btn-pin:hover { background:var(--lime2); }
+.pin-hint {
+  font-family:'DM Mono',monospace; font-size:9px; color:var(--text3);
+  letter-spacing:1px; margin-top:10px;
+}
+.admin-panel { display:none; padding:18px 20px 0; }
+.admin-panel.show { display:block; }
+.admin-section-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.admin-section-head-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text3);
+}
+.admin-section-head-count {
+  font-family:'DM Mono',monospace; font-size:10px; color:var(--lime);
+  background:rgba(198,241,53,0.1); border:1px solid rgba(198,241,53,0.2);
+  padding:1px 8px; border-radius:4px;
+}
+.admin-section-divider { flex:1; height:1px; background:var(--border); }
+.applicant-card {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px; margin-bottom:10px;
+}
+.applicant-header { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+.applicant-avatar {
+  width:38px; height:38px; flex-shrink:0; background:var(--s2);
+  border:1px solid var(--border2); border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--text2);
+}
+.applicant-info { flex:1; }
+.applicant-name { font-size:13px; font-weight:700; margin-bottom:2px; }
+.applicant-meta {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.5px; color:var(--text3);
+}
+.status-pill {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1.5px;
+  text-transform:uppercase; padding:3px 8px; border-radius:4px; flex-shrink:0;
+}
+.status-pill.pending  { background:rgba(240,120,48,0.1); color:var(--orange); border:1px solid rgba(240,120,48,0.2); }
+.status-pill.approved { background:rgba(198,241,53,0.1); color:var(--lime); border:1px solid rgba(198,241,53,0.2); }
+.status-pill.rejected { background:rgba(232,64,64,0.1); color:var(--red); border:1px solid rgba(232,64,64,0.2); }
+.applicant-intro {
+  font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:10px;
+  padding:9px; background:var(--s2); border-radius:var(--radius-s);
+}
+.applicant-links {
+  font-family:'DM Mono',monospace; font-size:9px; color:var(--lime);
+  letter-spacing:0.5px; margin-bottom:10px; word-break:break-all; line-height:1.8;
+}
+.admin-file-section-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:5px;
+}
+.admin-files-row { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.admin-file-thumb {
+  width:62px; height:62px; border-radius:var(--radius-s); overflow:hidden;
+  border:1px solid var(--border); cursor:pointer; position:relative;
+  background:var(--s2); display:flex; align-items:center; justify-content:center;
+  font-size:20px; transition:border-color 0.2s;
+}
+.admin-file-thumb:hover { border-color:var(--lime); }
+.admin-file-thumb img { width:100%; height:100%; object-fit:cover; }
+.file-type-badge {
+  position:absolute; bottom:3px; right:3px; background:rgba(0,0,0,0.7);
+  font-family:'DM Mono',monospace; font-size:7px; padding:1px 4px;
+  border-radius:3px; color:white;
+}
+.style-check-label {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:7px;
+}
+.style-check-grid { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.style-check-item {
+  display:flex; align-items:center; gap:4px; font-size:10px; color:var(--text2);
+  cursor:pointer; padding:4px 9px; background:var(--s2); border:1px solid var(--border);
+  border-radius:6px; transition:all 0.15s;
+}
+.style-check-item:has(input:checked) {
+  background:rgba(198,241,53,0.08); border-color:rgba(198,241,53,0.3); color:var(--lime);
+}
+.style-check-item input { display:none; }
+.applicant-btns { display:flex; gap:8px; }
+.btn-approve {
+  flex:1; padding:10px; background:var(--lime); border:none; border-radius:var(--radius-s);
+  color:#0a0a0a; font-family:'DM Mono',monospace; font-size:10px;
+  font-weight:bold; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;
+}
+.btn-approve:hover { background:var(--lime2); }
+.btn-reject {
+  flex:1; padding:10px; background:transparent; border:1px solid var(--red);
+  border-radius:var(--radius-s); color:var(--red);
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px;
+  text-transform:uppercase; cursor:pointer; transition:background 0.2s;
+}
+.btn-reject:hover { background:rgba(232,64,64,0.08); }
+.approved-item {
+  background:var(--s1); border:1px solid var(--border); border-radius:var(--radius-s);
+  padding:10px 13px; margin-bottom:7px; display:flex; align-items:center; gap:10px;
+}
+.approved-item-name { flex:1; font-size:12px; font-weight:600; }
+.approved-item-spec {
+  font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:0.5px;
+}
+.btn-revoke {
+  padding:5px 10px; background:transparent; border:1px solid var(--border2);
+  border-radius:6px; color:var(--text3); font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+}
+.btn-revoke:hover { border-color:var(--red); color:var(--red); }
+
+/* ── 공통 유틸 ── */
+.empty-note {
+  text-align:center; padding:24px 0;
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:1px; text-transform:uppercase; color:var(--text3);
+}
+.toast {
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+  background:var(--text); color:var(--bg);
+  padding:9px 16px; border-radius:var(--radius-s);
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.5px;
+  z-index:999; opacity:0; transition:opacity 0.25s;
+  white-space:nowrap; pointer-events:none;
+}
+.toast.show { opacity:1; }
+.lightbox {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.95); z-index:500;
+  align-items:center; justify-content:center; padding:20px;
+}
+.lightbox.show { display:flex; }
+.lightbox img { max-width:100%; max-height:88dvh; border-radius:var(--radius); object-fit:contain; }
+.lightbox-close {
+  position:absolute; top:16px; right:16px;
+  background:var(--s2); border:1px solid var(--border); border-radius:50%;
+  width:36px; height:36px; color:var(--text); font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hair-card { animation:fadeUp 0.3s ease both; }
+.hair-card:nth-child(1){animation-delay:.03s}.hair-card:nth-child(2){animation-delay:.07s}
+.hair-card:nth-child(3){animation-delay:.11s}.hair-card:nth-child(4){animation-delay:.15s}
+.hair-card:nth-child(5){animation-delay:.19s}.hair-card:nth-child(6){animation-delay:.23s}
+.hair-card:nth-child(7){animation-delay:.27s}.hair-card:nth-child(8){animation-delay:.31s}
+
+/* ── 비디오 플레이어 모달 ── */
+.video-player-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.88); backdrop-filter:blur(8px);
+  z-index:300; align-items:flex-end; justify-content:center;
+}
+.video-player-overlay.show { display:flex; }
+.video-player-sheet {
+  width:100%; max-width:480px;
+  background:var(--s1); border-radius:20px 20px 0 0;
+  border:1px solid var(--border); border-bottom:none;
+  overflow:hidden; animation:slideUp 0.35s cubic-bezier(0.32,0.72,0,1);
+}
+@keyframes slideUp {
+  from { transform:translateY(100%); }
+  to   { transform:translateY(0); }
+}
+.video-player-header {
+  padding:14px 18px; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1px solid var(--border); gap:10px;
+}
+.video-player-title {
+  font-size:12px; font-weight:600; color:var(--text); line-height:1.4;
+  flex:1; min-width:0; display:-webkit-box; -webkit-line-clamp:2;
+  -webkit-box-orient:vertical; overflow:hidden; letter-spacing:-0.2px;
+}
+.video-player-close {
+  width:28px; height:28px; flex-shrink:0;
+  background:var(--s2); border:none; border-radius:50%;
+  color:var(--text3); font-size:12px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+}
+.video-player-close:hover { background:var(--s3); color:var(--text); }
+.video-player-wrap { position:relative; width:100%; aspect-ratio:16/9; background:#000; }
+.video-player-wrap iframe { position:absolute; inset:0; width:100%; height:100%; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- 비디오 플레이어 모달 -->
+<div class="video-player-overlay" id="videoPlayer" onclick="closeVideoPlayer()">
+  <div class="video-player-sheet" onclick="event.stopPropagation()">
+    <div class="video-player-header">
+      <div class="video-player-title" id="playerTitle"></div>
+      <button class="video-player-close" onclick="closeVideoPlayer()">✕</button>
+    </div>
+    <div class="video-player-wrap">
+      <iframe id="playerIframe" src="" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 탑바 ══ -->
+<div class="topbar">
+  <div class="brand">LULU <em>GROOMING</em><span class="brand-dot"></span></div>
+  <div class="topbar-right">
+    <a class="btn-admin-link" href="mentor.html" style="text-decoration:none;">Studio</a>
+    <button class="btn-admin-link" onclick="switchTab('admin')">Admin</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     FIX 탭 — 외출 전 스타일링 솔루션
+══════════════════════════════ -->
+<div class="page active" id="page-fix">
+
+  <!-- 히어로 -->
+  <div class="fix-hero">
+    <div class="fix-eyebrow">Quick Styling Solution</div>
+    <h1>외출 전<br><em>5분</em><br>스타일 FIX</h1>
+    <p>카테고리 선택 → 조건 입력 → 맞춤 솔루션 + 영상 추천</p>
+  </div>
+
+  <!-- 카테고리 바 -->
+  <div class="cat-bar" id="catBar">
+    <button class="cat-btn active" data-cat="hair" onclick="selectCat('hair',this)">
+      <span class="cat-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 8.12"/><circle cx="14" cy="16" r="3"/><path d="M14 19v2"/><path d="M14 13v-1"/></svg></span> 헤어
+    </button>
+    <button class="cat-btn" data-cat="makeup" onclick="selectCat('makeup',this)">
+      <span class="cat-ico"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 014 4v6a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M10 18.5V22h4v-3.5"/><path d="M9 12h6"/></svg></span> 메이크업
+    </button>
+    <button class="cat-btn" data-cat="outfit" onclick="selectCat('outfit',this)">
+      <span class="cat-ico"><svg viewBox="0 0 24 24"><path d="M6 2l3 5v15h6V7l3-5"/><path d="M9 7h6"/><path d="M12 2v5"/></svg></span> 코디
+    </button>
+    <button class="cat-btn" data-cat="hairloss" onclick="selectCat('hairloss',this)">
+      <span class="cat-ico"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0118 0"/><path d="M3 13h18"/><path d="M5 13v4a2 2 0 002 2h10a2 2 0 002-2v-4"/><circle cx="12" cy="8" r="1"/></svg></span> 탈모커버
+    </button>
+    <button class="cat-btn" data-cat="perfume" onclick="selectCat('perfume',this)">
+      <span class="cat-ico"><svg viewBox="0 0 24 24"><path d="M10 6V3h4v3"/><rect x="7" y="6" width="10" height="14" rx="2"/><path d="M12 2v1"/><path d="M9 3h6"/><path d="M10 10c0 1.1.9 2 2 2s2-.9 2-2"/></svg></span> 향수
+    </button>
+  </div>
+
+  <!-- 패널 컨테이너 -->
+  <div class="fix-panels">
+
+    <!-- ── 헤어 패널 ── -->
+    <div class="fix-panel active" id="panel-hair">
+      <div class="opt-group">
+        <div class="panel-section-title">헤어 타입</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="hair-type" data-val="직모">직모</div>
+          <div class="opt-chip" data-group="hair-type" data-val="웨이브">웨이브</div>
+          <div class="opt-chip" data-group="hair-type" data-val="곱슬">곱슬</div>
+          <div class="opt-chip" data-group="hair-type" data-val="가는모발">가는 모발</div>
+          <div class="opt-chip" data-group="hair-type" data-val="굵은모발">굵은 모발</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">현재 헤어 길이</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="hair-length" data-val="숏">숏</div>
+          <div class="opt-chip" data-group="hair-length" data-val="미디엄">미디엄</div>
+          <div class="opt-chip" data-group="hair-length" data-val="롱">롱</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">오늘 원하는 스타일</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="hair-style" data-val="자연스럽게">자연스럽게</div>
+          <div class="opt-chip" data-group="hair-style" data-val="볼륨감">볼륨감</div>
+          <div class="opt-chip" data-group="hair-style" data-val="깔끔하게">깔끔하게</div>
+          <div class="opt-chip" data-group="hair-style" data-val="펌 살리기">펌 살리기</div>
+          <div class="opt-chip" data-group="hair-style" data-val="슬릭하게">슬릭하게</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">가진 제품 / 도구</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="hair-tool" data-val="드라이어">드라이어</div>
+          <div class="opt-chip" data-group="hair-tool" data-val="왁스">왁스</div>
+          <div class="opt-chip" data-group="hair-tool" data-val="포마드">포마드</div>
+          <div class="opt-chip" data-group="hair-tool" data-val="에센스">에센스</div>
+          <div class="opt-chip" data-group="hair-tool" data-val="고데기">고데기</div>
+          <div class="opt-chip" data-group="hair-tool" data-val="아무것도없음">아무것도 없음</div>
+        </div>
+      </div>
+      <div class="direct-input-wrap">
+        <span class="direct-input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <input class="direct-input" id="hair-memo" placeholder="추가로 알려주세요 (예: 앞머리 삐져나옴, 오늘 비 오는 날)">
+      </div>
+    </div>
+
+    <!-- ── 메이크업 패널 ── -->
+    <div class="fix-panel" id="panel-makeup">
+      <div class="opt-group">
+        <div class="panel-section-title">피부 타입</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="skin-type" data-val="지성">지성</div>
+          <div class="opt-chip" data-group="skin-type" data-val="건성">건성</div>
+          <div class="opt-chip" data-group="skin-type" data-val="복합성">복합성</div>
+          <div class="opt-chip" data-group="skin-type" data-val="민감성">민감성</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">커버 고민</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="skin-concern" data-val="다크서클">다크서클</div>
+          <div class="opt-chip" data-group="skin-concern" data-val="트러블">트러블</div>
+          <div class="opt-chip" data-group="skin-concern" data-val="칙칙함">칙칙함</div>
+          <div class="opt-chip" data-group="skin-concern" data-val="모공">모공</div>
+          <div class="opt-chip" data-group="skin-concern" data-val="없음">특별히 없음</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">원하는 분위기</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="makeup-mood" data-val="데일리 내추럴">데일리 내추럴</div>
+          <div class="opt-chip" data-group="makeup-mood" data-val="청초하게">청초하게</div>
+          <div class="opt-chip" data-group="makeup-mood" data-val="또렷하게">또렷하게</div>
+          <div class="opt-chip" data-group="makeup-mood" data-val="생기있게">생기있게</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">소요 시간</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="makeup-time" data-val="3분 이내">3분 이내</div>
+          <div class="opt-chip" data-group="makeup-time" data-val="5분">5분</div>
+          <div class="opt-chip" data-group="makeup-time" data-val="10분">10분</div>
+        </div>
+      </div>
+      <div class="direct-input-wrap">
+        <span class="direct-input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <input class="direct-input" id="makeup-memo" placeholder="추가 정보 (예: 오늘 여드름 생김, 마스크 쓸 예정)">
+      </div>
+    </div>
+
+    <!-- ── 코디 패널 ── -->
+    <div class="fix-panel" id="panel-outfit">
+      <div class="opt-group">
+        <div class="panel-section-title">외출 목적</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="outfit-purpose" data-val="출근">출근</div>
+          <div class="opt-chip" data-group="outfit-purpose" data-val="데이트">데이트</div>
+          <div class="opt-chip" data-group="outfit-purpose" data-val="친구 약속">친구 약속</div>
+          <div class="opt-chip" data-group="outfit-purpose" data-val="면접">면접</div>
+          <div class="opt-chip" data-group="outfit-purpose" data-val="캐주얼 외출">캐주얼 외출</div>
+          <div class="opt-chip" data-group="outfit-purpose" data-val="운동">운동</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">오늘 날씨</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="weather" data-val="맑음">☀️ 맑음</div>
+          <div class="opt-chip" data-group="weather" data-val="흐림">☁️ 흐림</div>
+          <div class="opt-chip" data-group="weather" data-val="비">🌧️ 비</div>
+          <div class="opt-chip" data-group="weather" data-val="추움">🧊 추움</div>
+          <div class="opt-chip" data-group="weather" data-val="더움">🌡️ 더움</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">선호 스타일</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="outfit-style" data-val="미니멀">미니멀</div>
+          <div class="opt-chip" data-group="outfit-style" data-val="캐주얼">캐주얼</div>
+          <div class="opt-chip" data-group="outfit-style" data-val="스트릿">스트릿</div>
+          <div class="opt-chip" data-group="outfit-style" data-val="포멀">포멀</div>
+          <div class="opt-chip" data-group="outfit-style" data-val="스포티">스포티</div>
+        </div>
+      </div>
+      <div class="direct-input-wrap">
+        <span class="direct-input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <input class="direct-input" id="outfit-memo" placeholder="추가 정보 (예: 상의는 흰 티 입음, 키 170 / 보통 체형)">
+      </div>
+    </div>
+
+    <!-- ── 탈모 커버 패널 ── -->
+    <div class="fix-panel" id="panel-hairloss">
+      <div class="opt-group">
+        <div class="panel-section-title">탈모 부위</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="loss-area" data-val="M자 헤어라인">M자 헤어라인</div>
+          <div class="opt-chip" data-group="loss-area" data-val="정수리">정수리</div>
+          <div class="opt-chip" data-group="loss-area" data-val="전체적 숱 감소">전체적 숱 감소</div>
+          <div class="opt-chip" data-group="loss-area" data-val="옆머리">옆머리</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">진행 정도</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="loss-level" data-val="초기">초기 (신경쓰이는 정도)</div>
+          <div class="opt-chip" data-group="loss-level" data-val="중간">중간 (눈에 보임)</div>
+          <div class="opt-chip" data-group="loss-level" data-val="많이 진행">많이 진행</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">가진 도구</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="loss-tool" data-val="헤어스프레이">헤어스프레이</div>
+          <div class="opt-chip" data-group="loss-tool" data-val="탈모 커버 파우더">탈모 커버 파우더</div>
+          <div class="opt-chip" data-group="loss-tool" data-val="모자">모자</div>
+          <div class="opt-chip" data-group="loss-tool" data-val="왁스">왁스</div>
+          <div class="opt-chip" data-group="loss-tool" data-val="아무것도없음">아무것도 없음</div>
+        </div>
+      </div>
+      <div class="direct-input-wrap">
+        <span class="direct-input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <input class="direct-input" id="hairloss-memo" placeholder="추가 정보 (예: 오늘 중요한 미팅 있음, 두피 예민)">
+      </div>
+    </div>
+
+    <!-- ── 향수 패널 ── -->
+    <div class="fix-panel" id="panel-perfume">
+      <div class="opt-group">
+        <div class="panel-section-title">외출 목적</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="perf-purpose" data-val="출근·비즈니스">출근·비즈니스</div>
+          <div class="opt-chip" data-group="perf-purpose" data-val="데이트">데이트</div>
+          <div class="opt-chip" data-group="perf-purpose" data-val="캐주얼 외출">캐주얼 외출</div>
+          <div class="opt-chip" data-group="perf-purpose" data-val="운동">운동</div>
+          <div class="opt-chip" data-group="perf-purpose" data-val="파티·이벤트">파티·이벤트</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">선호 향 계열</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="perf-note" data-val="시트러스">🍋 시트러스</div>
+          <div class="opt-chip" data-group="perf-note" data-val="우디">🌲 우디</div>
+          <div class="opt-chip" data-group="perf-note" data-val="플로럴">🌸 플로럴</div>
+          <div class="opt-chip" data-group="perf-note" data-val="머스크">🕊️ 머스크</div>
+          <div class="opt-chip" data-group="perf-note" data-val="오리엔탈">🌙 오리엔탈</div>
+          <div class="opt-chip" data-group="perf-note" data-val="아쿠아">💧 아쿠아</div>
+          <div class="opt-chip" data-group="perf-note" data-val="잘 모름">잘 모름</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">향 강도</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="perf-strength" data-val="은은하게">은은하게</div>
+          <div class="opt-chip" data-group="perf-strength" data-val="적당히">적당히</div>
+          <div class="opt-chip" data-group="perf-strength" data-val="진하게">진하게</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="panel-section-title">계절</div>
+        <div class="opt-chips">
+          <div class="opt-chip" data-group="perf-season" data-val="봄">봄</div>
+          <div class="opt-chip" data-group="perf-season" data-val="여름">여름</div>
+          <div class="opt-chip" data-group="perf-season" data-val="가을">가을</div>
+          <div class="opt-chip" data-group="perf-season" data-val="겨울">겨울</div>
+        </div>
+      </div>
+      <div class="direct-input-wrap">
+        <span class="direct-input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+        <input class="direct-input" id="perfume-memo" placeholder="추가 정보 (예: 가진 향수 이름, 땀 많이 나는 편)">
+      </div>
+    </div>
+
+    <!-- 선택 요약 + 실행 버튼 (모든 패널 공통) -->
+    <div style="padding:0 20px;">
+      <div class="sel-summary" id="selSummary"></div>
+      <button class="btn-fix-run" id="btnFixRun" onclick="runFix()">
+        <span class="run-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span> 솔루션 받기
+      </button>
+    </div>
+
+  </div><!-- /fix-panels -->
+
+  <!-- ── 홈 멘토 추천 ── -->
+  <div class="home-mentor-section" id="homeMentorSection">
+    <div class="home-mentor-head">
+      <div class="home-mentor-head-dot"></div>
+      <div class="home-mentor-head-label">Recommended Mentors</div>
+      <div class="home-mentor-head-line"></div>
+      <button class="home-mentor-head-more" onclick="switchTab('apply')">MORE →</button>
+    </div>
+    <div class="home-mentor-scroll" id="homeMentorScroll">
+
+      <div class="hm-card">
+        <div class="hm-card-verified">✓ Verified</div>
+        <div class="hm-avatar">JW</div>
+        <div class="hm-name">정우혁</div>
+        <div class="hm-spec">헤어 스타일링 · 7년</div>
+        <div class="hm-desc">투블럭, 리젠트컷 전문. 얼굴형에 맞는 자연스러운 스타일링을 추구합니다.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">헤어</span>
+          <span class="mtag">투블럭</span>
+          <span class="mtag">리젠트</span>
+        </div>
+      </div>
+
+      <div class="hm-card">
+        <div class="hm-card-verified">✓ Verified</div>
+        <div class="hm-avatar">SY</div>
+        <div class="hm-name">서유진</div>
+        <div class="hm-spec">메이크업 · 5년</div>
+        <div class="hm-desc">남성 메이크업 전문. 자연스러운 피부 보정과 눈매 교정에 강점이 있어요.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">메이크업</span>
+          <span class="mtag">남성뷰티</span>
+        </div>
+      </div>
+
+      <div class="hm-card">
+        <div class="hm-card-verified">✓ Verified</div>
+        <div class="hm-avatar">KM</div>
+        <div class="hm-name">김민수</div>
+        <div class="hm-spec">코디 · 8년</div>
+        <div class="hm-desc">TPO에 맞는 남성 패션 코디. 체형별 핏 가이드 제공합니다.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">코디</span>
+          <span class="mtag">비즈니스</span>
+          <span class="mtag">캐주얼</span>
+        </div>
+      </div>
+
+      <div class="hm-card">
+        <div class="hm-avatar">PH</div>
+        <div class="hm-name">박현진</div>
+        <div class="hm-spec">향수 · 4년</div>
+        <div class="hm-desc">시향 500종 이상. 계절·상황별 향수 추천과 레이어링 전문입니다.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">향수</span>
+          <span class="mtag">니치향수</span>
+        </div>
+      </div>
+
+      <div class="hm-card">
+        <div class="hm-card-verified">✓ Verified</div>
+        <div class="hm-avatar">LJ</div>
+        <div class="hm-name">이재훈</div>
+        <div class="hm-spec">탈모 커버 · 6년</div>
+        <div class="hm-desc">두피 관리와 헤어 볼륨 스타일링으로 자연스러운 커버를 도와드려요.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">탈모커버</span>
+          <span class="mtag">볼륨</span>
+        </div>
+      </div>
+
+      <div class="hm-card">
+        <div class="hm-avatar">CH</div>
+        <div class="hm-name">최하은</div>
+        <div class="hm-spec">헤어 스타일링 · 3년</div>
+        <div class="hm-desc">여성 단발~미디엄 스타일 전문. 셀프 고데기 웨이브 강의 인기.</div>
+        <div class="hm-tags">
+          <span class="mtag verified">헤어</span>
+          <span class="mtag">웨이브</span>
+          <span class="mtag">단발</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 홈 숏폼 영상 ── -->
+  <div class="home-shorts-section" id="homeShortsSection" style="display:none;">
+    <div class="home-mentor-head">
+      <div class="home-mentor-head-dot"></div>
+      <div class="home-mentor-head-label">Styling Shorts</div>
+      <div class="home-mentor-head-line"></div>
+      <button class="home-mentor-head-more" onclick="window.location.href='mentor.html'">STUDIO →</button>
+    </div>
+    <div class="home-shorts-scroll" id="homeShortsScroll"></div>
+  </div>
+
+  <!-- ── 결과 화면 ── -->
+  <div class="result-page" id="resultPage">
+
+    <div class="result-topbar">
+      <button class="btn-back" onclick="closeResult()">←</button>
+      <div>
+        <div class="result-topbar-label" id="resultCatLabel"></div>
+        <div class="result-topbar-cats" id="resultSelLabel"></div>
+      </div>
+    </div>
+
+    <!-- AI 솔루션 -->
+    <div class="solution-card" id="solutionCard">
+      <div class="solution-card-head">
+        <div class="solution-card-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="solution-card-label">AI Styling Solution</div>
+      </div>
+      <div id="solutionBody">
+        <div class="solution-loading">
+          <div class="sol-dots"><span></span><span></span><span></span></div>
+          솔루션 생성 중...
+        </div>
+      </div>
+    </div>
+
+    <!-- 멘토 추천 -->
+    <div class="result-section">
+      <div class="result-sec-head">
+        <div class="result-sec-dot"></div>
+        <div class="result-sec-label">Verified Mentors</div>
+        <div class="result-sec-line"></div>
+      </div>
+      <div id="resultMentors"></div>
+    </div>
+
+    <!-- 유튜브 추천 -->
+    <div class="result-section" style="padding-bottom:20px;">
+      <div class="result-sec-head">
+        <div class="result-sec-dot"></div>
+        <div class="result-sec-label">YouTube</div>
+        <div class="result-sec-line"></div>
+      </div>
+      <div class="yt-loading" id="ytLoading">
+        <div class="yt-dots"><span></span><span></span><span></span></div>
+        영상 검색 중...
+      </div>
+      <div class="yt-list" id="ytList"></div>
+    </div>
+
+  </div><!-- /result-page -->
+
+</div><!-- /page-fix -->
+
+<!-- ══════════════════════════════
+     STYLE 탭 (헤어 갤러리)
+══════════════════════════════ -->
+<div class="page" id="page-gallery">
+  <div class="saved-hero">
+    <div class="hero-eyebrow">My Collection</div>
+    <h1>즐겨찾기<br><em>SAVED</em></h1>
+  </div>
+  <div class="saved-toolbar">
+    <div class="saved-breadcrumb" id="savedBreadcrumb">
+      <span class="bc-current">전체</span>
+    </div>
+    <button class="btn-saved-tool" id="btnNewFolder" onclick="createNewFolder()">+ Folder</button>
+    <button class="btn-saved-tool" id="btnEditMode" onclick="toggleEditMode()">Edit</button>
+  </div>
+  <div class="saved-grid" id="savedGrid"></div>
+</div>
+
+<!-- ══════════════════════════════
+     MENTOR 신청 탭
+══════════════════════════════ -->
+<div class="page" id="page-apply">
+  <div class="apply-hero">
+    <div class="apply-hero-eye">Become a Mentor</div>
+    <h2>그루밍 멘토가<br>되어<em>보세요</em></h2>
+    <p>검증된 멘토에게는 우선 노출 혜택과<br>매칭 기회가 주어집니다.</p>
+    <div class="benefit-row">
+      <span class="benefit-badge">우선 노출</span>
+      <span class="benefit-badge">영상 추천</span>
+      <span class="benefit-badge">매칭 연결</span>
+      <span class="benefit-badge">검증 뱃지</span>
+    </div>
+  </div>
+  <div class="apply-form" id="applyForm">
+    <div class="field-row">
+      <div class="field"><label>이름</label><input type="text" id="apName" placeholder="홍길동"></div>
+      <div class="field"><label>연락처</label><input type="tel" id="apPhone" placeholder="010-0000-0000"></div>
+    </div>
+    <div class="field">
+      <label>전문 분야</label>
+      <select id="apSpec">
+        <option value="">선택해 주세요</option>
+        <option>남성 헤어스타일링</option>
+        <option>여성 헤어스타일링</option>
+        <option>남녀 모두</option>
+        <option>바버샵 전문</option>
+        <option>메이크업</option>
+        <option>코디·스타일링</option>
+        <option>탈모 케어</option>
+        <option>향수·퍼퓨머리</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>경력</label>
+      <select id="apCareer">
+        <option value="">선택해 주세요</option>
+        <option>1년 미만</option><option>1~3년</option>
+        <option>3~5년</option><option>5~10년</option><option>10년 이상</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>자기소개</label>
+      <textarea id="apIntro" placeholder="어떤 스타일을 잘 다루시나요? 특기나 강점을 써주세요."></textarea>
+    </div>
+    <div class="field">
+      <label>자격증 / 수료증</label>
+      <div class="upload-zone" id="certZone"
+           ondragover="zoneDrag(event,'certZone')" ondragleave="zoneDragEnd('certZone')" ondrop="zoneDrop(event,'cert')">
+        <input type="file" id="certInput" accept="image/*,.pdf" multiple onchange="handleFiles(this,'cert')">
+        <div class="upload-zone-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="upload-zone-label">자격증 · 수료증 첨부</div>
+        <div class="upload-zone-sub">IMAGE OR PDF · MULTIPLE OK</div>
+      </div>
+      <div class="file-preview-list" id="certPreview"></div>
+    </div>
+    <div class="field">
+      <label>포트폴리오</label>
+      <div class="upload-zone" id="portZone"
+           ondragover="zoneDrag(event,'portZone')" ondragleave="zoneDragEnd('portZone')" ondrop="zoneDrop(event,'port')">
+        <input type="file" id="portInput" accept="image/*,.pdf" multiple onchange="handleFiles(this,'port')">
+        <div class="upload-zone-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg></div>
+        <div class="upload-zone-label">포트폴리오 이미지 첨부</div>
+        <div class="upload-zone-sub">WORK PHOTOS · BEFORE &amp; AFTER</div>
+      </div>
+      <div class="file-preview-list" id="portPreview"></div>
+    </div>
+    <div class="field">
+      <label>YouTube 채널 / 영상 URL</label>
+      <div class="yt-add-row">
+        <input type="url" id="ytUrlInput" placeholder="https://youtube.com/...">
+        <button class="btn-yt-add" onclick="addYtUrl()">＋</button>
+      </div>
+      <div class="yt-tag-list" id="ytTagList"></div>
+    </div>
+    <button class="btn-submit" onclick="submitApply()">APPLY AS MENTOR</button>
+  </div>
+  <div class="apply-done" id="applyDone">
+    <div class="apply-done-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg></div>
+    <div class="apply-done-title">신청 완료!</div>
+    <div class="apply-done-sub">관리자 검토 후 승인되면<br>멘토로 노출됩니다.<br>보통 1~3일 내로 연락드려요.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     ADMIN 탭
+══════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="admin-lock" id="adminLock">
+    <div class="admin-lock-brand">LULU <span style="color:var(--lime)">GROOMING</span></div>
+    <div class="admin-lock-sub">Admin Access Required</div>
+    <div class="pin-row">
+      <input class="pin-input" type="password" maxlength="1" id="p1" oninput="pinNext(this,'p2')">
+      <input class="pin-input" type="password" maxlength="1" id="p2" oninput="pinNext(this,'p3')">
+      <input class="pin-input" type="password" maxlength="1" id="p3" oninput="pinNext(this,'p4')">
+      <input class="pin-input" type="password" maxlength="1" id="p4" oninput="pinNext(this,null)">
+    </div>
+    <button class="btn-pin" onclick="checkPin()">ENTER</button>
+    <div class="pin-hint">HINT: 1234</div>
+  </div>
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-section-head">
+      <div class="admin-section-head-label">Pending Review</div>
+      <div class="admin-section-head-count" id="pendingCount">0</div>
+      <div class="admin-section-divider"></div>
+    </div>
+    <div id="pendingList"></div>
+    <div class="admin-section-head" style="margin-top:24px;">
+      <div class="admin-section-head-label">Approved Mentors</div>
+      <div class="admin-section-head-count" id="approvedCount">0</div>
+      <div class="admin-section-divider"></div>
+    </div>
+    <div id="approvedList" style="padding-bottom:20px;"></div>
+  </div>
+</div>
+
+<!-- ══ 탭바 ══ -->
+<!-- 홈 비디오 모달 -->
+<div class="home-video-modal" id="homeVideoModal">
+  <video id="homeModalVideo" controls></video>
+  <button class="hvm-close" onclick="closeHomeVideo()">✕ CLOSE</button>
+</div>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" id="tab-fix" onclick="switchTab('fix')">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span><span>FIX</span>
+  </button>
+  <button class="tab-btn" id="tab-gallery" onclick="switchTab('gallery')">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></span><span>Saved</span>
+  </button>
+  <button class="tab-btn" id="tab-apply" onclick="switchTab('apply')">
+    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg></span><span>Mentor</span>
+  </button>
+  <button class="tab-btn" id="tab-admin" onclick="switchTab('admin')">
+    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span><span>Admin</span>
+  </button>
+</nav>
+
+<script>
+// ══════════════════════════════════════════
+//  데이터
+// ══════════════════════════════════════════
+let mentorApps = JSON.parse(localStorage.getItem('gr-apps') || '[]');
+function saveApps() { localStorage.setItem('gr-apps', JSON.stringify(mentorApps)); }
+let applyFiles = { cert:[], port:[] };
+let applyYtUrls = [];
+
+// 카테고리 메타
+const CAT_META = {
+  hair:     { label:'헤어 스타일링', icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 8.12"/></svg>', color:'#c6f135' },
+  makeup:   { label:'메이크업',       icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 014 4v6a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M10 18.5V22h4v-3.5"/></svg>', color:'#ff9eb5' },
+  outfit:   { label:'코디',           icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2l3 5v15h6V7l3-5"/><path d="M9 7h6"/></svg>', color:'#7eb8f7' },
+  hairloss: { label:'탈모 커버',      icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13a9 9 0 0118 0"/><path d="M3 13h18"/></svg>', color:'#f7c07e' },
+  perfume:  { label:'향수',           icon:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6V3h4v3"/><rect x="7" y="6" width="10" height="14" rx="2"/></svg>', color:'#c07ef7' },
+};
+
+// ── 탭 전환 ──
+const ALL_TABS = ['fix','gallery','apply','admin'];
+function switchTab(tab) {
+  ALL_TABS.forEach(t => {
+    const pg = document.getElementById('page-'+t);
+    if (pg) pg.classList.toggle('active', t===tab);
+    const btn = document.getElementById('tab-'+t);
+    if (btn) btn.classList.toggle('active', t===tab);
+  });
+  if (tab==='admin')   renderAdmin();
+  if (tab==='gallery') renderSavedGrid();
+  if (tab==='fix') {
+    document.getElementById('resultPage').classList.remove('active');
+  }
+}
+
+// ══════════════════════════════════════════
+//  FIX 탭 로직
+// ══════════════════════════════════════════
+let currentCat = 'hair';
+let selections = {}; // { groupKey: value }
+
+function selectCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.fix-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+cat).classList.add('active');
+  // 같은 카테고리의 선택만 요약에 반영
+  renderSelSummary();
+}
+
+// 옵션 칩 클릭 (단일 선택 per group, 다중 선택 허용 그룹도 있음)
+document.addEventListener('click', function(e) {
+  const chip = e.target.closest('.opt-chip');
+  if (!chip) return;
+  const group = chip.dataset.group;
+  const val   = chip.dataset.val;
+  if (!group || !val) return;
+
+  // 같은 group 내 다른 칩 해제
+  document.querySelectorAll(`.opt-chip[data-group="${group}"]`).forEach(c => c.classList.remove('sel'));
+  chip.classList.toggle('sel'); // 이미 선택된 거 다시 누르면 해제
+  if (chip.classList.contains('sel')) {
+    selections[group] = val;
+  } else {
+    delete selections[group];
+  }
+  renderSelSummary();
+});
+
+function renderSelSummary() {
+  const el = document.getElementById('selSummary');
+  const entries = Object.entries(selections);
+  if (!entries.length) {
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = entries.map(([g, v]) =>
+    `<div class="sel-tag">
+      <span>${v}</span>
+      <span class="tag-x" onclick="removeTag('${g}')">×</span>
+    </div>`
+  ).join('');
+}
+
+function removeTag(group) {
+  delete selections[group];
+  document.querySelectorAll(`.opt-chip[data-group="${group}"]`).forEach(c => c.classList.remove('sel'));
+  renderSelSummary();
+}
+
+// ── FIX 실행 ──
+async function runFix() {
+  const cat  = currentCat;
+  const meta = CAT_META[cat];
+  const memo = document.getElementById(`${cat}-memo`)?.value?.trim() || '';
+  const selArr = Object.entries(selections).map(([g,v]) => v);
+
+  if (!selArr.length && !memo) {
+    showToast('하나 이상 선택하거나 직접 입력해 주세요');
+    return;
+  }
+
+  // 결과 화면 표시
+  const resultPage = document.getElementById('resultPage');
+  resultPage.classList.add('active');
+  resultPage.scrollIntoView({ behavior:'smooth' });
+
+  document.getElementById('resultCatLabel').textContent = meta.label;
+  document.getElementById('resultSelLabel').textContent =
+    [...selArr, memo].filter(Boolean).join(' · ');
+
+  // AI 솔루션 초기화
+  document.getElementById('solutionBody').innerHTML =
+    `<div class="solution-loading"><div class="sol-dots"><span></span><span></span><span></span></div>솔루션 생성 중...</div>`;
+
+  // 멘토 초기화
+  const resultMentors = document.getElementById('resultMentors');
+  resultMentors.innerHTML = '';
+
+  // 유튜브 초기화
+  document.getElementById('ytLoading').style.display = 'flex';
+  document.getElementById('ytList').innerHTML = '';
+
+  // 시스템 프롬프트 구성
+  const systemPrompt = buildSystemPrompt(cat, meta);
+  const userMsg = buildUserMsg(cat, selArr, memo);
+
+  // AI + YouTube 병렬 호출
+  const [aiRes, ytQuery] = await Promise.all([
+    callAI(systemPrompt, userMsg),
+    buildYtQuery(cat, selArr, memo)
+  ]);
+
+  // AI 솔루션 표시
+  document.getElementById('solutionBody').innerHTML =
+    `<div class="solution-card-body">${formatSolution(aiRes)}</div>`;
+
+  // 멘토 추천
+  renderResultMentors(cat, resultMentors);
+
+  // 유튜브 검색
+  await searchYoutube(ytQuery, getMentorsForCat(cat), 'ytLoading', 'ytList');
+}
+
+function buildSystemPrompt(cat, meta) {
+  const guides = {
+    hair:     '헤어 스타일링 전문가. 5분 안에 할 수 있는 단계별 스타일링 루틴을 알려줘. 제품 사용법, 드라이 방향, 손가락 포지션 등 구체적으로. 번호 목록으로 3~5단계.',
+    makeup:   '메이크업 전문가. 빠르고 간단한 데일리 메이크업 루틴을 알려줘. 제품 선택 팁, 발색 방법, 지속력 팁 포함. 번호 목록으로 3~5단계.',
+    outfit:   '퍼스널 스타일리스트. 외출 목적과 날씨에 맞는 코디 조합을 추천해줘. 색조합, 아이템 선택 기준, 포인트 아이템 포함. 구체적이고 실용적으로.',
+    hairloss: '탈모 케어 전문가. 오늘 당장 커버할 수 있는 스타일링 팁을 알려줘. 가진 도구 활용법, 두피 보호 주의사항 포함. 번호 목록으로 3~5단계.',
+    perfume:  '퍼퓨머리 전문가. 상황과 계절에 맞는 향수 사용법과 추천 향 계열을 알려줘. 뿌리는 부위, 레이어링 팁, 주의사항 포함. 구체적으로.',
+  };
+  return `당신은 룰루 그루밍(LULU GROOMING)의 ${meta.label} 전문 컨설턴트입니다.
+${guides[cat]}
+답변 규칙:
+- 한국어, 친절하고 전문적인 톤
+- 총 150~250자 이내로 간결하게
+- 특수기호나 마크다운 없이 텍스트만
+- 마지막에 한 줄: "💡 오늘의 핵심: [핵심 팁 한 문장]"`;
+}
+
+function buildUserMsg(cat, selArr, memo) {
+  const parts = selArr.length ? `선택 조건: ${selArr.join(', ')}` : '';
+  const memoStr = memo ? `추가 메모: ${memo}` : '';
+  return [parts, memoStr].filter(Boolean).join('\n') || `${cat} 스타일링 솔루션 주세요`;
+}
+
+async function buildYtQuery(cat, selArr, memo) {
+  const base = {
+    hair:     '헤어 스타일링',
+    makeup:   '메이크업 튜토리얼',
+    outfit:   '코디 추천',
+    hairloss: '탈모 헤어스타일링',
+    perfume:  '향수 추천',
+  }[cat];
+  const extra = selArr.slice(0,2).join(' ');
+  return `${extra} ${base}`.trim();
+}
+
+function formatSolution(text) {
+  if (!text) return '솔루션을 불러오지 못했어요. 다시 시도해 주세요.';
+  // 번호 목록 줄바꿈 처리
+  return text
+    .replace(/([1-9]\.\s)/g, '\n$1')
+    .replace(/💡/g, '\n\n💡')
+    .trim();
+}
+
+async function callAI(system, userContent) {
+  try {
+    const res = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system,
+        messages:[{ role:'user', content:userContent }],
+        max_tokens: 512
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  } catch(e) { return ''; }
+}
+
+function getMentorsForCat(cat) {
+  // 카테고리와 연관된 spec 키워드
+  const specMap = {
+    hair:     ['헤어','남성 헤어','여성 헤어','바버','컬러','펌'],
+    makeup:   ['메이크업'],
+    outfit:   ['코디','스타일링'],
+    hairloss: ['탈모'],
+    perfume:  ['향수','퍼퓨머리'],
+  };
+  const keywords = specMap[cat] || [];
+  return mentorApps.filter(a =>
+    a.status==='approved' &&
+    keywords.some(k => (a.spec||'').includes(k))
+  );
+}
+
+function renderResultMentors(cat, el) {
+  const mentors = getMentorsForCat(cat);
+  if (!mentors.length) {
+    el.innerHTML = `<div class="empty-note">이 분야의 검증된 멘토가 아직 없어요</div>`;
+    return;
+  }
+  el.innerHTML = mentors.slice(0,3).map(m =>
+    `<div class="mentor-card">
+      <div class="mentor-avatar">${m.name[0]}</div>
+      <div class="mentor-body">
+        <div class="mentor-name">${esc(m.name)}</div>
+        <div class="mentor-spec">${esc(m.spec)} · ${esc(m.career)}</div>
+        <div class="mentor-tags">
+          <span class="mtag verified">✓ VERIFIED</span>
+          <span class="mtag">${esc(m.spec)}</span>
+        </div>
+      </div>
+      <button class="btn-contact" onclick="showToast('${esc(m.name)} 멘토에게 연락 요청!')">연락하기</button>
+    </div>`
+  ).join('');
+}
+
+function closeResult() {
+  document.getElementById('resultPage').classList.remove('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ══════════════════════════════════════════
+//  YouTube
+// ══════════════════════════════════════════
+async function searchYoutube(query, mentors, loadingId, listId) {
+  const ytList = document.getElementById(listId);
+  const ytLoading = document.getElementById(loadingId);
+  ytLoading.style.display = 'flex';
+
+  try {
+    const res = await fetch(`/api/youtube?q=${encodeURIComponent(query)}&maxResults=5`);
+    const data = await res.json();
+    const videos = (data.items || []).map(item => ({
+      videoId: item.id?.videoId || '',
+      title:   item.snippet?.title || '',
+      channel: item.snippet?.channelTitle || '',
+      thumb:   item.snippet?.thumbnails?.medium?.url || ''
+    })).filter(v => v.videoId);
+
+    const mentorVideos = (mentors||[]).flatMap(mentor =>
+      (mentor.ytUrls||[]).slice(0,1).map(url => {
+        const m = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+        const videoId = m ? m[1] : '';
+        return {
+          title: `${mentor.name} 멘토 — 스타일링`,
+          channel: mentor.name + ' 채널',
+          videoId,
+          thumb: videoId ? `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg` : '',
+          isMentor: true
+        };
+      }).filter(v => v.videoId)
+    );
+
+    ytLoading.style.display = 'none';
+
+    const renderCard = v => {
+      const favId = 'yt-' + v.videoId;
+      const isFav = isFaved(favId);
+      return `<div class="yt-card" style="position:relative;">
+        <div style="display:flex;cursor:pointer;" onclick="openVideoPlayer('${v.videoId}','${esc(v.title)}')">
+          <div class="yt-thumb">
+            ${v.thumb
+              ? `<img class="yt-thumb-img" src="${v.thumb}" alt="" loading="lazy">`
+              : `<div class="yt-thumb-fallback"><svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div>`}
+            <div class="yt-thumb-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div>
+          </div>
+          <div class="yt-body">
+            <div class="yt-title">${esc(v.title)}</div>
+            <div class="yt-channel">${esc(v.channel)}</div>
+            ${v.isMentor ? `<div class="yt-mentor-pip"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg> MENTOR PICK</div>` : ''}
+          </div>
+        </div>
+        <button class="btn-fav-star ${isFav?'active':''}" style="position:absolute;top:6px;right:6px;"
+          onclick="event.stopPropagation();toggleFavYt('${v.videoId}','${esc(v.title)}','${esc(v.channel)}','${v.thumb||''}',this)">
+          ${isFav ? '★' : '☆'}
+        </button>
+      </div>`;
+    };
+
+    const html = [...mentorVideos, ...videos].map(renderCard).join('');
+    ytList.innerHTML = html || `<div class="empty-note">검색 결과가 없어요</div>`;
+  } catch(e) {
+    ytLoading.style.display = 'none';
+    ytList.innerHTML = `<div class="empty-note">영상을 불러오지 못했어요</div>`;
+  }
+}
+
+// ── 영상 플레이어 ──
+function openVideoPlayer(videoId, title) {
+  document.getElementById('playerTitle').textContent = title;
+  document.getElementById('playerIframe').src =
+    `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+  document.getElementById('videoPlayer').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeVideoPlayer() {
+  document.getElementById('playerIframe').src = '';
+  document.getElementById('videoPlayer').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ══════════════════════════════════════════
+//  즐겨찾기 (SAVED 탭)
+// ══════════════════════════════════════════
+const FAV_KEY = 'gr-favorites';
+let favItems = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+let favEditMode = false;
+let favCurrentFolder = null; // null = root
+let favDragIdx = null;
+
+function saveFavs() { localStorage.setItem(FAV_KEY, JSON.stringify(favItems)); }
+
+function isFaved(id) { return favItems.some(f => f.id === id); }
+
+function addFavorite(item) {
+  if (isFaved(item.id)) return;
+  item.order = favItems.length;
+  item.folderId = null;
+  favItems.push(item);
+  saveFavs();
+  showToast('즐겨찾기에 추가했어요 ★');
+}
+
+function removeFavorite(id) {
+  favItems = favItems.filter(f => f.id !== id);
+  // 폴더 삭제 시 하위 아이템도 루트로 이동
+  favItems.forEach(f => { if (f.folderId === id) f.folderId = null; });
+  saveFavs();
+  renderSavedGrid();
+  showToast('즐겨찾기에서 제거했어요');
+}
+
+function toggleFav(item) {
+  if (isFaved(item.id)) { removeFavorite(item.id); return false; }
+  else { addFavorite(item); return true; }
+}
+
+function createNewFolder() {
+  const existingFolders = favItems.filter(f => f.type === 'folder');
+  const num = existingFolders.length + 1;
+  const folder = {
+    id: 'folder-' + Date.now(),
+    type: 'folder',
+    name: '새 폴더 ' + num,
+    order: favItems.length,
+    folderId: favCurrentFolder,
+    parentId: favCurrentFolder
+  };
+  favItems.push(folder);
+  saveFavs();
+  renderSavedGrid();
+  showToast('새 폴더가 생성되었습니다');
+}
+
+function openFolder(folderId) {
+  favCurrentFolder = folderId;
+  favEditMode = false;
+  document.getElementById('btnEditMode').classList.remove('active');
+  document.getElementById('btnEditMode').textContent = 'Edit';
+  renderSavedGrid();
+}
+
+function goToRoot() {
+  favCurrentFolder = null;
+  renderSavedGrid();
+}
+
+function toggleEditMode() {
+  favEditMode = !favEditMode;
+  const btn = document.getElementById('btnEditMode');
+  const grid = document.getElementById('savedGrid');
+  if (favEditMode) {
+    btn.classList.add('active');
+    btn.textContent = 'Done';
+    grid.classList.add('edit-mode');
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = 'Edit';
+    grid.classList.remove('edit-mode');
+  }
+  renderSavedGrid();
+}
+
+function renderBreadcrumb() {
+  const el = document.getElementById('savedBreadcrumb');
+  if (!favCurrentFolder) {
+    el.innerHTML = '<span class="bc-current">전체</span>';
+    return;
+  }
+  const folder = favItems.find(f => f.id === favCurrentFolder);
+  let html = '<span onclick="goToRoot()">전체</span>';
+  // 부모 체인 탐색
+  const chain = [];
+  let cur = folder;
+  while (cur) {
+    chain.unshift(cur);
+    cur = cur.parentId ? favItems.find(f => f.id === cur.parentId) : null;
+  }
+  chain.forEach((f, i) => {
+    html += '<span class="bc-sep">/</span>';
+    if (i === chain.length - 1) {
+      html += `<span class="bc-current">${esc(f.name)}</span>`;
+    } else {
+      html += `<span onclick="openFolder('${f.id}')">${esc(f.name)}</span>`;
+    }
+  });
+  el.innerHTML = html;
+}
+
+function renderSavedGrid() {
+  renderBreadcrumb();
+  const grid = document.getElementById('savedGrid');
+  // 현재 폴더의 아이템만 필터
+  const items = favItems
+    .filter(f => (f.folderId || null) === favCurrentFolder)
+    .sort((a,b) => (a.order||0) - (b.order||0));
+
+  if (!items.length) {
+    grid.innerHTML = `<div class="saved-empty">
+      ${favCurrentFolder ? '이 폴더는 비어있어요<br>영상을 드래그해서 넣어보세요' : '아직 즐겨찾기한 영상이 없어요<br>홈에서 ☆을 눌러 추가해보세요'}
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((item, idx) => {
+    if (item.type === 'folder') {
+      const childCount = favItems.filter(f => f.folderId === item.id).length;
+      return `<div class="fav-folder ${favEditMode?'':'clickable'}"
+                   draggable="${favEditMode}" data-fav-idx="${idx}" data-fav-id="${item.id}"
+                   ${favEditMode ? `ondragstart="favDragStart(event,${idx})" ondragover="favDragOver(event,this)" ondragleave="this.classList.remove('drag-over')" ondrop="favDrop(event,${idx},this)"` : ''}
+                   onclick="${favEditMode ? '' : "openFolder('"+item.id+"')"}">
+                <div class="fav-edit-overlay">
+                  <button class="fav-edit-btn" onclick="event.stopPropagation();startRenameFolder('${item.id}')" title="이름 변경"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="fav-edit-btn del" onclick="event.stopPropagation();removeFavorite('${item.id}')" title="삭제">✕</button>
+                </div>
+                <div class="fav-folder-ico"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+                <div class="fav-folder-name" id="fname-${item.id}">${esc(item.name)}</div>
+                <div class="fav-folder-count">${childCount} items</div>
+              </div>`;
+    } else {
+      const thumbHtml = item.type === 'youtube'
+        ? `<img src="${item.thumb}" alt="" loading="lazy">`
+        : `<video src="${item.videoUrl}" preload="metadata" muted></video>`;
+      const badge = item.type === 'youtube' ? 'YouTube' : 'Mentor';
+      return `<div class="fav-card"
+                   draggable="${favEditMode}" data-fav-idx="${idx}" data-fav-id="${item.id}"
+                   ${favEditMode ? `ondragstart="favDragStart(event,${idx})" ondragover="favDragOver(event,this)" ondragleave="this.classList.remove('drag-over')" ondrop="favDrop(event,${idx},this)"` : ''}
+                   onclick="${favEditMode ? '' : "playFavVideo('"+item.id+"')"}">
+                <div class="fav-edit-overlay">
+                  <button class="fav-edit-btn" onclick="event.stopPropagation();startRenameFav('${item.id}')" title="이름 변경"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                  <button class="fav-edit-btn del" onclick="event.stopPropagation();removeFavorite('${item.id}')" title="즐겨찾기 해제">☆</button>
+                </div>
+                <div class="fav-thumb">
+                  ${thumbHtml}
+                  <div class="fav-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div>
+                  <div class="fav-type-badge">${badge}</div>
+                </div>
+                <div class="fav-card-info">
+                  <div class="fav-card-title" id="ftitle-${item.id}">${esc(item.title)}</div>
+                  <div class="fav-card-meta">${esc(item.mentorName || item.channel || '')}</div>
+                </div>
+              </div>`;
+    }
+  }).join('');
+}
+
+// 드래그 순서 변경 + 폴더 이동
+function favDragStart(e, idx) {
+  favDragIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  const el = e.target.closest('.fav-card,.fav-folder');
+  if (el) setTimeout(() => el.classList.add('dragging'), 0);
+}
+function favDragOver(e, el) {
+  e.preventDefault();
+  el.classList.add('drag-over');
+}
+function favDrop(e, targetIdx, el) {
+  e.preventDefault();
+  el.classList.remove('drag-over');
+  const items = favItems
+    .filter(f => (f.folderId || null) === favCurrentFolder)
+    .sort((a,b) => (a.order||0) - (b.order||0));
+  if (favDragIdx === null || favDragIdx === targetIdx) return;
+
+  const draggedItem = items[favDragIdx];
+  const targetItem = items[targetIdx];
+
+  // 폴더 위에 드롭하면 폴더 안으로 이동
+  if (targetItem && targetItem.type === 'folder' && draggedItem.id !== targetItem.id) {
+    const orig = favItems.find(f => f.id === draggedItem.id);
+    if (orig) {
+      orig.folderId = targetItem.id;
+      saveFavs();
+      renderSavedGrid();
+      showToast(`"${targetItem.name}" 폴더로 이동했어요`);
+      favDragIdx = null;
+      return;
+    }
+  }
+
+  // 같은 레벨에서 순서 변경
+  const src = items.splice(favDragIdx, 1)[0];
+  items.splice(targetIdx, 0, src);
+  items.forEach((it, i) => {
+    const orig = favItems.find(f => f.id === it.id);
+    if (orig) orig.order = i;
+  });
+  saveFavs();
+  renderSavedGrid();
+  favDragIdx = null;
+}
+
+// 이름 변경
+function startRenameFolder(id) {
+  const el = document.getElementById('fname-' + id);
+  const item = favItems.find(f => f.id === id);
+  if (!el || !item) return;
+  el.outerHTML = `<input class="fav-folder-name-input" id="fname-${id}" value="${esc(item.name)}"
+    onblur="finishRename('${id}','folder',this.value)"
+    onkeydown="if(event.key==='Enter')this.blur()" autofocus>`;
+  const inp = document.getElementById('fname-' + id);
+  inp.focus(); inp.select();
+}
+function startRenameFav(id) {
+  const el = document.getElementById('ftitle-' + id);
+  const item = favItems.find(f => f.id === id);
+  if (!el || !item) return;
+  el.outerHTML = `<input class="fav-card-title-input" id="ftitle-${id}" value="${esc(item.title)}"
+    onblur="finishRename('${id}','video',this.value)"
+    onkeydown="if(event.key==='Enter')this.blur()" autofocus>`;
+  const inp = document.getElementById('ftitle-' + id);
+  inp.focus(); inp.select();
+}
+function finishRename(id, type, value) {
+  const item = favItems.find(f => f.id === id);
+  if (!item) return;
+  if (type === 'folder') item.name = value.trim() || item.name;
+  else item.title = value.trim() || item.title;
+  saveFavs();
+  renderSavedGrid();
+}
+
+// ☆ 즐겨찾기 토글 헬퍼
+function toggleFavYt(videoId, title, channel, thumb, btn) {
+  const id = 'yt-' + videoId;
+  const added = toggleFav({
+    id, type:'youtube', title, channel, thumb, videoId, order:0
+  });
+  if (btn) {
+    btn.textContent = added !== false ? '★' : '☆';
+    btn.classList.toggle('active', added !== false);
+  }
+}
+function toggleFavMentor(videoId, title, mentorName, videoUrl, btn) {
+  const id = 'mv-' + videoId;
+  const added = toggleFav({
+    id, type:'video', title, mentorName, videoUrl, thumb:'', order:0
+  });
+  if (btn) {
+    btn.textContent = added !== false ? '★' : '☆';
+    btn.classList.toggle('active', added !== false);
+  }
+}
+
+// 영상 재생
+function playFavVideo(id) {
+  const item = favItems.find(f => f.id === id);
+  if (!item) return;
+  if (item.type === 'youtube') {
+    openVideoPlayer(item.videoId, item.title);
+  } else {
+    // 멘토 영상 (로컬)
+    const modal = document.getElementById('homeVideoModal');
+    const vid = document.getElementById('homeModalVideo');
+    vid.src = item.videoUrl;
+    modal.classList.add('active');
+    vid.play();
+  }
+}
+
+// ══════════════════════════════════════════
+//  파일 업로드 (멘토 신청)
+// ══════════════════════════════════════════
+function zoneDrag(e, zoneId) { e.preventDefault(); document.getElementById(zoneId).classList.add('drag-over'); }
+function zoneDragEnd(zoneId) { document.getElementById(zoneId).classList.remove('drag-over'); }
+function zoneDrop(e, type) {
+  e.preventDefault();
+  document.getElementById(type==='cert'?'certZone':'portZone').classList.remove('drag-over');
+  readFiles(Array.from(e.dataTransfer.files), type);
+}
+function handleFiles(input, type) { readFiles(Array.from(input.files), type); input.value=''; }
+function readFiles(files, type) {
+  files.forEach(file => {
+    if (!file.type.startsWith('image/') && file.type!=='application/pdf') return;
+    if (file.size > 10*1024*1024) { showToast('10MB 이하 파일만 가능해요'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      applyFiles[type].push({ name:file.name, size:file.size, type:file.type, dataUrl:e.target.result });
+      renderFilePreview(type);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function removeFile(type, idx) { applyFiles[type].splice(idx,1); renderFilePreview(type); }
+function renderFilePreview(type) {
+  const elId = type==='cert'?'certPreview':'portPreview';
+  document.getElementById(elId).innerHTML = applyFiles[type].map((f,i) => {
+    const isImg = f.type.startsWith('image/');
+    const sizeStr = f.size>1024*1024?(f.size/1024/1024).toFixed(1)+'MB':(f.size/1024).toFixed(0)+'KB';
+    return `<div class="file-preview-item">
+      <div class="file-preview-thumb">${isImg?`<img src="${f.dataUrl}" alt="">`:'📄'}</div>
+      <div class="file-preview-body">
+        <div class="file-preview-name">${esc(f.name)}</div>
+        <div class="file-preview-size">${sizeStr}</div>
+      </div>
+      <button class="btn-file-remove" onclick="removeFile('${type}',${i})">×</button>
+    </div>`;
+  }).join('');
+}
+function openLightbox(src) { document.getElementById('lightboxImg').src=src; document.getElementById('lightbox').classList.add('show'); }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
+
+// ══════════════════════════════════════════
+//  멘토 신청 제출
+// ══════════════════════════════════════════
+function addYtUrl() {
+  const inp = document.getElementById('ytUrlInput');
+  const url = inp.value.trim();
+  if (!url||!url.startsWith('http')) { showToast('올바른 URL을 입력해 주세요'); return; }
+  if (applyYtUrls.includes(url)) { showToast('이미 추가된 URL이에요'); return; }
+  applyYtUrls.push(url); inp.value=''; renderYtTags();
+}
+function removeYtUrl(i) { applyYtUrls.splice(i,1); renderYtTags(); }
+function renderYtTags() {
+  document.getElementById('ytTagList').innerHTML = applyYtUrls.map((u,i) =>
+    `<div class="yt-tag"><span>${u.length>32?u.slice(0,32)+'…':u}</span><button onclick="removeYtUrl(${i})">×</button></div>`
+  ).join('');
+}
+function submitApply() {
+  const name  = document.getElementById('apName').value.trim();
+  const phone = document.getElementById('apPhone').value.trim();
+  const spec  = document.getElementById('apSpec').value;
+  const career= document.getElementById('apCareer').value;
+  const intro = document.getElementById('apIntro').value.trim();
+  if (!name||!phone||!spec||!career||!intro) { showToast('모든 항목을 입력해 주세요'); return; }
+  mentorApps.push({
+    id:Date.now(), name, phone, spec, career, intro,
+    ytUrls:[...applyYtUrls],
+    certFiles:[...applyFiles.cert], portFiles:[...applyFiles.port],
+    styles:[], status:'pending',
+    appliedAt:new Date().toLocaleDateString('ko-KR')
+  });
+  saveApps();
+  document.getElementById('applyForm').style.display='none';
+  document.getElementById('applyDone').classList.add('show');
+}
+
+// ══════════════════════════════════════════
+//  어드민
+// ══════════════════════════════════════════
+const ADMIN_PIN = '1234';
+function pinNext(el, nextId) { if (el.value&&nextId) document.getElementById(nextId).focus(); }
+function checkPin() {
+  const pin = ['p1','p2','p3','p4'].map(id=>document.getElementById(id).value).join('');
+  if (pin===ADMIN_PIN) {
+    document.getElementById('adminLock').style.display='none';
+    document.getElementById('adminPanel').classList.add('show');
+    renderAdmin();
+  } else {
+    showToast('PIN이 틀렸어요');
+    ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('p1').focus();
+  }
+}
+function renderAdmin() {
+  const pending  = mentorApps.filter(a=>a.status==='pending');
+  const approved = mentorApps.filter(a=>a.status==='approved');
+  document.getElementById('pendingCount').textContent  = pending.length;
+  document.getElementById('approvedCount').textContent = approved.length;
+  const pel = document.getElementById('pendingList');
+  if (!pending.length) {
+    pel.innerHTML = `<div class="empty-note">대기 중인 신청 없음</div>`;
+  } else {
+    pel.innerHTML = pending.map(a => {
+      const certHtml = (a.certFiles||[]).map(f => {
+        const isImg = f.type?.startsWith('image/');
+        return `<div class="admin-file-thumb" ${isImg?`onclick="openLightbox('${f.dataUrl}')"`:''}}>
+          ${isImg?`<img src="${f.dataUrl}" alt="">`:'📄'}
+          <span class="file-type-badge">${isImg?'IMG':'PDF'}</span></div>`;
+      }).join('');
+      const portHtml = (a.portFiles||[]).map(f => {
+        const isImg = f.type?.startsWith('image/');
+        return `<div class="admin-file-thumb" ${isImg?`onclick="openLightbox('${f.dataUrl}')"`:''}}>
+          ${isImg?`<img src="${f.dataUrl}" alt="">`:'📄'}
+          <span class="file-type-badge">${isImg?'IMG':'PDF'}</span></div>`;
+      }).join('');
+      return `<div class="applicant-card">
+        <div class="applicant-header">
+          <div class="applicant-avatar">${a.name[0]}</div>
+          <div class="applicant-info">
+            <div class="applicant-name">${esc(a.name)}</div>
+            <div class="applicant-meta">${esc(a.spec)} · ${esc(a.career)} · ${a.appliedAt}</div>
+          </div>
+          <span class="status-pill pending">PENDING</span>
+        </div>
+        <div class="applicant-intro">${esc(a.intro)}</div>
+        ${a.ytUrls?.length?`<div class="applicant-links">${a.ytUrls.map(u=>'▶ '+u).join('<br>')}</div>`:''}
+        ${certHtml?`<div class="admin-file-section-label">자격증 · 수료증</div><div class="admin-files-row">${certHtml}</div>`:''}
+        ${portHtml?`<div class="admin-file-section-label">포트폴리오</div><div class="admin-files-row">${portHtml}</div>`:''}
+        <div class="style-check-label">커버할 스타일 선택</div>
+        <div class="style-check-grid">
+          ${[...STYLES.male,...STYLES.female].map(s=>
+            `<label class="style-check-item">
+              <input type="checkbox" value="${s.id}" ${(a.styles||[]).includes(s.id)?'checked':''}
+                onchange="toggleStyle(${a.id},'${s.id}',this.checked)">
+              ${s.name}
+            </label>`
+          ).join('')}
+        </div>
+        <div class="applicant-btns">
+          <button class="btn-approve" onclick="approveApp(${a.id})">APPROVE</button>
+          <button class="btn-reject"  onclick="rejectApp(${a.id})">REJECT</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const ael = document.getElementById('approvedList');
+  if (!approved.length) {
+    ael.innerHTML = `<div class="empty-note">승인된 멘토 없음</div>`;
+  } else {
+    ael.innerHTML = approved.map(a =>
+      `<div class="approved-item">
+        <div>
+          <div class="approved-item-name">${esc(a.name)}</div>
+          <div class="approved-item-spec">${esc(a.spec)} · ${esc(a.career)}</div>
+        </div>
+        <button class="btn-revoke" onclick="revokeApp(${a.id})">REVOKE</button>
+      </div>`
+    ).join('');
+  }
+}
+function toggleStyle(appId, styleId, checked) {
+  const app = mentorApps.find(a=>a.id===appId);
+  if (!app) return;
+  app.styles = app.styles||[];
+  if (checked) { if (!app.styles.includes(styleId)) app.styles.push(styleId); }
+  else app.styles = app.styles.filter(s=>s!==styleId);
+  saveApps();
+}
+function approveApp(id) {
+  const app=mentorApps.find(a=>a.id===id);
+  if(app){app.status='approved';saveApps();renderAdmin();renderGallery();showToast('멘토를 승인했어요!');}
+}
+function rejectApp(id) {
+  const app=mentorApps.find(a=>a.id===id);
+  if(app){app.status='rejected';saveApps();renderAdmin();showToast('거절 처리됐어요');}
+}
+function revokeApp(id) {
+  const app=mentorApps.find(a=>a.id===id);
+  if(app){app.status='pending';saveApps();renderAdmin();renderGallery();showToast('멘토 자격이 취소됐어요');}
+}
+
+// ══════════════════════════════════════════
+//  유틸
+// ══════════════════════════════════════════
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/<|>/g,m=>({'<':'&lt;','>':'&gt;'})[m]).replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════
+//  홈 멘토 데이터 연동 + 숏폼 슬라이더
+// ══════════════════════════════════════════
+function loadMentorStudioProfile() {
+  return JSON.parse(localStorage.getItem('gr-mentor-profile') || 'null');
+}
+function loadMentorStudioVideos() {
+  return JSON.parse(localStorage.getItem('gr-mentor-videos') || '[]');
+}
+
+function renderHomeMentorFromStudio() {
+  const profile = loadMentorStudioProfile();
+  if (!profile || !profile.name) return;
+
+  // 첫 번째 홈 멘토 카드에 스튜디오 멘토를 동적으로 추가
+  const scroll = document.getElementById('homeMentorScroll');
+  if (!scroll) return;
+
+  // 이미 추가되었으면 제거
+  const existing = scroll.querySelector('.hm-card-studio');
+  if (existing) existing.remove();
+
+  const avatarContent = profile.avatar
+    ? `<img src="${profile.avatar}" alt="">`
+    : `<div class="hm-avatar">${profile.name.substring(0,2).toUpperCase()}</div>`;
+  const avatarHtml = profile.avatar
+    ? `<div class="hm-avatar" style="overflow:hidden;"><img src="${profile.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"></div>`
+    : `<div class="hm-avatar">${profile.name.substring(0,1)}</div>`;
+
+  const videos = loadMentorStudioVideos();
+  const videoCount = videos.length;
+
+  const card = document.createElement('div');
+  card.className = 'hm-card hm-card-studio';
+  card.innerHTML = `
+    <div class="hm-card-verified">✓ STUDIO</div>
+    ${avatarHtml}
+    <div class="hm-name">${esc(profile.name)}</div>
+    <div class="hm-spec">${esc(profile.spec || '')}${profile.career ? ' · ' + esc(profile.career) : ''}</div>
+    <div class="hm-desc">${esc(profile.intro || '')}</div>
+    <div class="hm-tags">
+      <span class="mtag verified">${esc(profile.spec ? profile.spec.split('·')[0].split(' ')[0] : 'Mentor')}</span>
+      ${videoCount ? '<span class="mtag">' + videoCount + ' SHORTS</span>' : ''}
+    </div>`;
+  card.style.cursor = 'pointer';
+  card.onclick = () => window.location.href = 'mentor.html';
+  scroll.insertBefore(card, scroll.firstChild);
+}
+
+function renderHomeShortsSlider() {
+  const profile = loadMentorStudioProfile();
+  const videos = loadMentorStudioVideos();
+  const section = document.getElementById('homeShortsSection');
+  const scroll = document.getElementById('homeShortsScroll');
+
+  if (!videos.length) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  const mentorName = profile?.name || 'Mentor';
+  const avatarHtml = profile?.avatar
+    ? `<img src="${profile.avatar}" alt="">`
+    : mentorName.substring(0,1);
+
+  scroll.innerHTML = videos.map(v => {
+    const favId = 'mv-' + v.id;
+    const isFav = isFaved(favId);
+    return `<div class="hs-card" onclick="playHomeVideo('${v.id}')">
+      <video src="${v.dataUrl}" preload="metadata" muted></video>
+      <div class="hs-play-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div>
+      <button class="btn-fav-star ${isFav?'active':''}"
+        onclick="event.stopPropagation();toggleFavMentor('${v.id}','${esc(v.title||v.comment||'')}','${esc(mentorName)}','${v.dataUrl}',this)">
+        ${isFav ? '★' : '☆'}
+      </button>
+      <div class="hs-overlay">
+        <div class="hs-mentor-row">
+          <div class="hs-mentor-avatar">${avatarHtml}</div>
+          <div class="hs-mentor-name">${esc(mentorName)}</div>
+        </div>
+        <div class="hs-comment">${esc(v.comment || v.title)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function playHomeVideo(id) {
+  const videos = loadMentorStudioVideos();
+  const v = videos.find(x => x.id === id);
+  if (!v) return;
+  const modal = document.getElementById('homeVideoModal');
+  const vid = document.getElementById('homeModalVideo');
+  vid.src = v.dataUrl;
+  modal.classList.add('active');
+  vid.play();
+}
+function closeHomeVideo() {
+  const modal = document.getElementById('homeVideoModal');
+  const vid = document.getElementById('homeModalVideo');
+  vid.pause(); vid.src = '';
+  modal.classList.remove('active');
+}
+
+// 초기화
+renderSavedGrid();
+renderHomeMentorFromStudio();
+renderHomeShortsSlider();
+</script>
+</body>
+</html>
