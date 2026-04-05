@@ -526,25 +526,27 @@ select.pf-input option { background:var(--s1); color:var(--text); }
 
 <script>
 // ══════════════════════════════════════════
-//  데이터 관리
+//  데이터 관리 (Supabase API)
 // ══════════════════════════════════════════
-const PROFILE_KEY = 'gr-mentor-profile';
-const VIDEOS_KEY  = 'gr-mentor-videos';
+let currentProfile = null; // {id, name, spec, career, intro, avatar_url}
+let mentorVideos = [];
 
-function loadProfile() {
-  return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-}
-function saveProfileData(data) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
-}
-function loadVideos() {
-  return JSON.parse(localStorage.getItem(VIDEOS_KEY) || '[]');
-}
-function saveVideosData(arr) {
-  localStorage.setItem(VIDEOS_KEY, JSON.stringify(arr));
+async function loadProfile() {
+  try {
+    const list = await (await fetch('/api/mentor-profile')).json();
+    currentProfile = Array.isArray(list) && list.length ? list[0] : null;
+  } catch(e) { currentProfile = null; }
+  return currentProfile;
 }
 
-// 토스트
+async function loadVideos() {
+  try {
+    if (!currentProfile?.id) return [];
+    mentorVideos = await (await fetch(`/api/mentor-videos?mentor_id=${currentProfile.id}`)).json();
+  } catch(e) { mentorVideos = []; }
+  return mentorVideos;
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -555,28 +557,27 @@ function showToast(msg) {
 // ══════════════════════════════════════════
 //  프로필
 // ══════════════════════════════════════════
-let profileImage = null; // base64
+let avatarFile = null; // File object for upload
 
 document.getElementById('avatarInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showToast('이미지는 5MB 이하만 가능합니다'); return; }
+  avatarFile = file;
+  // 로컬 미리보기
   const reader = new FileReader();
-  reader.onload = function(ev) {
-    profileImage = ev.target.result;
-    renderAvatar();
-  };
+  reader.onload = function(ev) { renderAvatarSrc(ev.target.result); };
   reader.readAsDataURL(file);
 });
 
-function renderAvatar() {
+function renderAvatarSrc(src) {
   const wrap = document.getElementById('avatarUpload');
   const ph = document.getElementById('avatarPlaceholder');
-  if (profileImage) {
+  if (src) {
     wrap.classList.add('has-img');
     let img = wrap.querySelector('img');
     if (!img) { img = document.createElement('img'); wrap.appendChild(img); }
-    img.src = profileImage;
+    img.src = src;
     ph.style.display = 'none';
   } else {
     wrap.classList.remove('has-img');
@@ -586,35 +587,64 @@ function renderAvatar() {
   }
 }
 
-function saveProfile() {
+async function saveProfile() {
   const name = document.getElementById('pfName').value.trim();
   const spec = document.getElementById('pfSpec').value;
   const career = document.getElementById('pfCareer').value;
   const intro = document.getElementById('pfIntro').value.trim();
   if (!name) { showToast('이름을 입력해 주세요'); return; }
   if (!spec) { showToast('전문 분야를 선택해 주세요'); return; }
-  const data = { name, spec, career, intro, avatar: profileImage, updatedAt: Date.now() };
-  saveProfileData(data);
+
+  let avatar_url = currentProfile?.avatar_url || null;
+
+  // 아바타 이미지 업로드
+  if (avatarFile) {
+    try {
+      const fd = new FormData();
+      fd.append('file', avatarFile);
+      fd.append('bucket', 'mentor-avatars');
+      fd.append('mentor_id', currentProfile?.id || 'new');
+      const upRes = await (await fetch('/api/mentor-upload', { method:'POST', body:fd })).json();
+      if (upRes.url) avatar_url = upRes.url;
+    } catch(e) {}
+    avatarFile = null;
+  }
+
+  try {
+    if (currentProfile?.id) {
+      // 수정
+      await fetch('/api/mentor-profile', {
+        method:'PUT', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ id:currentProfile.id, name, spec, career, intro, avatar_url })
+      });
+    } else {
+      // 생성
+      const res = await (await fetch('/api/mentor-profile', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ name, spec, career, intro, avatar_url })
+      })).json();
+      currentProfile = Array.isArray(res) ? res[0] : res;
+    }
+    await loadProfile();
+  } catch(e) {}
+
   showToast('프로필이 저장되었습니다 ✓');
   renderPreview();
 }
 
-// 기존 프로필 로드
-function initProfile() {
-  const p = loadProfile();
-  if (!p) return;
-  document.getElementById('pfName').value = p.name || '';
-  document.getElementById('pfSpec').value = p.spec || '';
-  document.getElementById('pfCareer').value = p.career || '';
-  document.getElementById('pfIntro').value = p.intro || '';
-  if (p.avatar) { profileImage = p.avatar; renderAvatar(); }
+async function initProfile() {
+  await loadProfile();
+  if (!currentProfile) return;
+  document.getElementById('pfName').value = currentProfile.name || '';
+  document.getElementById('pfSpec').value = currentProfile.spec || '';
+  document.getElementById('pfCareer').value = currentProfile.career || '';
+  document.getElementById('pfIntro').value = currentProfile.intro || '';
+  if (currentProfile.avatar_url) renderAvatarSrc(currentProfile.avatar_url);
 }
 
 // ══════════════════════════════════════════
-//  영상 업로드
+//  영상 업로드 (Supabase Storage + DB)
 // ══════════════════════════════════════════
-let mentorVideos = []; // [{id, title, comment, dataUrl, order}]
-
 document.getElementById('videoFileInput').addEventListener('change', function(e) {
   handleVideoFiles(e.target.files);
   this.value = '';
@@ -628,6 +658,7 @@ function handleVideoDrop(e) {
 
 function handleVideoFiles(files) {
   if (!files.length) return;
+  if (!currentProfile?.id) { showToast('먼저 프로필을 저장해 주세요'); return; }
   const arr = Array.from(files).filter(f => {
     if (!f.type.startsWith('video/')) { showToast('영상 파일만 업로드 가능합니다'); return false; }
     if (f.size > 100 * 1024 * 1024) { showToast(f.name + ': 100MB 초과'); return false; }
@@ -637,9 +668,10 @@ function handleVideoFiles(files) {
   processVideoQueue(arr, 0);
 }
 
-function processVideoQueue(files, idx) {
+async function processVideoQueue(files, idx) {
   if (idx >= files.length) {
     document.getElementById('uploadProgress').classList.remove('active');
+    await loadVideos();
     renderVideoPads();
     renderPreview();
     showToast(files.length + '개 영상이 추가되었습니다');
@@ -651,27 +683,36 @@ function processVideoQueue(files, idx) {
   const txt = document.getElementById('upText');
   prog.classList.add('active');
   txt.textContent = (idx+1) + '/' + files.length + ' — ' + file.name;
+  bar.style.width = '0%';
 
-  const reader = new FileReader();
-  reader.onprogress = function(e) {
-    if (e.lengthComputable) {
-      const pct = Math.round(e.loaded / e.total * 100);
-      bar.style.width = pct + '%';
+  try {
+    // Storage에 업로드
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('bucket', 'mentor-videos');
+    fd.append('mentor_id', currentProfile.id);
+    const upRes = await (await fetch('/api/mentor-upload', { method:'POST', body:fd })).json();
+    bar.style.width = '80%';
+
+    // DB에 메타데이터 저장
+    if (upRes.url) {
+      await fetch('/api/mentor-videos', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          mentor_id: currentProfile.id,
+          title: file.name.replace(/\.[^.]+$/, ''),
+          comment: '',
+          video_url: upRes.url,
+          sort_order: mentorVideos.length + idx,
+        })
+      });
     }
-  };
-  reader.onload = function(ev) {
     bar.style.width = '100%';
-    mentorVideos.push({
-      id: Date.now() + '_' + idx,
-      title: file.name.replace(/\.[^.]+$/, ''),
-      comment: '',
-      dataUrl: ev.target.result,
-      order: mentorVideos.length
-    });
-    saveVideosData(mentorVideos);
-    setTimeout(() => processVideoQueue(files, idx + 1), 200);
-  };
-  reader.readAsDataURL(file);
+  } catch(e) {
+    showToast('업로드 실패: ' + e.message);
+  }
+
+  setTimeout(() => processVideoQueue(files, idx + 1), 300);
 }
 
 // ── 비디오 패드 렌더 ──
@@ -685,20 +726,20 @@ function renderVideoPads() {
     <div class="video-pad" draggable="true" data-idx="${i}"
          ondragstart="vpDragStart(event,${i})" ondragover="event.preventDefault()"
          ondrop="vpDrop(event,${i})">
-      <div class="vp-preview" onclick="openModal('${v.id}')">
-        <video src="${v.dataUrl}" preload="metadata"></video>
-        <div class="vp-play-btn"><div class="vp-play-ico">▶</div></div>
+      <div class="vp-preview" onclick="openModal(${v.id})">
+        <video src="${v.video_url}" preload="metadata"></video>
+        <div class="vp-play-btn"><div class="vp-play-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div></div>
         <div class="vp-order">#${i+1}</div>
         <div class="vp-drag-handle" title="드래그하여 순서 변경">☰</div>
       </div>
       <div class="vp-body">
         <input class="vp-title-input" value="${escapeHtml(v.title)}" placeholder="영상 제목"
-               onchange="updateVideo('${v.id}','title',this.value)">
+               onchange="updateVideo(${v.id},'title',this.value)">
         <textarea class="vp-comment" placeholder="짧은 코멘트를 달아주세요 (예: 5분 투블럭 스타일링 비법!)"
-                  onchange="updateVideo('${v.id}','comment',this.value)">${escapeHtml(v.comment)}</textarea>
+                  onchange="updateVideo(${v.id},'comment',this.value)">${escapeHtml(v.comment)}</textarea>
         <div class="vp-actions">
-          <button class="vp-btn vp-btn-save" onclick="saveVideoMeta('${v.id}')">SAVE</button>
-          <button class="vp-btn vp-btn-del" onclick="deleteVideo('${v.id}')">DEL</button>
+          <button class="vp-btn vp-btn-save" onclick="saveVideoMeta(${v.id})">SAVE</button>
+          <button class="vp-btn vp-btn-del" onclick="deleteVideo(${v.id})">DEL</button>
         </div>
       </div>
     </div>
@@ -709,15 +750,23 @@ function updateVideo(id, field, value) {
   const v = mentorVideos.find(x => x.id === id);
   if (v) v[field] = value;
 }
-function saveVideoMeta(id) {
-  saveVideosData(mentorVideos);
+async function saveVideoMeta(id) {
+  const v = mentorVideos.find(x => x.id === id);
+  if (!v) return;
+  try {
+    await fetch('/api/mentor-videos', {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ id, title: v.title, comment: v.comment })
+    });
+  } catch(e) {}
   renderPreview();
   showToast('영상 정보가 저장되었습니다 ✓');
 }
-function deleteVideo(id) {
+async function deleteVideo(id) {
+  try {
+    await fetch(`/api/mentor-videos?id=${id}`, { method:'DELETE' });
+  } catch(e) {}
   mentorVideos = mentorVideos.filter(x => x.id !== id);
-  mentorVideos.forEach((v,i) => v.order = i);
-  saveVideosData(mentorVideos);
   renderVideoPads();
   renderPreview();
   showToast('영상이 삭제되었습니다');
@@ -729,13 +778,18 @@ function vpDragStart(e, idx) {
   vpDragIdx = idx;
   e.dataTransfer.effectAllowed = 'move';
 }
-function vpDrop(e, targetIdx) {
+async function vpDrop(e, targetIdx) {
   e.preventDefault();
   if (vpDragIdx === null || vpDragIdx === targetIdx) return;
   const item = mentorVideos.splice(vpDragIdx, 1)[0];
   mentorVideos.splice(targetIdx, 0, item);
-  mentorVideos.forEach((v,i) => v.order = i);
-  saveVideosData(mentorVideos);
+  const reorderItems = mentorVideos.map((v,i) => ({ id:v.id, sort_order:i }));
+  try {
+    await fetch('/api/mentor-videos', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ reorder:true, items:reorderItems })
+    });
+  } catch(e) {}
   renderVideoPads();
   renderPreview();
   vpDragIdx = null;
@@ -747,7 +801,7 @@ function openModal(id) {
   if (!v) return;
   const modal = document.getElementById('videoModal');
   const vid = document.getElementById('modalVideo');
-  vid.src = v.dataUrl;
+  vid.src = v.video_url;
   modal.classList.add('active');
   vid.play();
 }
@@ -768,15 +822,14 @@ function renderPreview() {
 
 function renderPreviewCard() {
   const el = document.getElementById('prevMentorCard');
-  const p = loadProfile();
+  const p = currentProfile;
   if (!p || !p.name) {
     el.innerHTML = '<div style="font-size:11px;color:var(--text3);text-align:center;padding:12px;">프로필을 저장하면 미리보기가 표시됩니다</div>';
     return;
   }
-  const initials = p.name.substring(0,1);
-  const avatarContent = p.avatar
-    ? `<img src="${p.avatar}" alt="">`
-    : initials;
+  const avatarContent = p.avatar_url
+    ? `<img src="${p.avatar_url}" alt="">`
+    : p.name.substring(0,1);
   el.innerHTML = `
     <div class="prev-mentor-card">
       <div class="prev-avatar">${avatarContent}</div>
@@ -790,15 +843,14 @@ function renderPreviewCard() {
 
 function renderPreviewShorts() {
   const el = document.getElementById('prevShortsScroll');
-  const p = loadProfile();
-  const vids = loadVideos();
-  if (!vids.length) {
+  const p = currentProfile;
+  if (!mentorVideos.length) {
     el.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:12px;">영상을 업로드하면 미리보기가 표시됩니다</div>';
     return;
   }
-  el.innerHTML = vids.map(v => `
-    <div class="prev-short-card" onclick="openModal('${v.id}')">
-      <video src="${v.dataUrl}" preload="metadata" muted></video>
+  el.innerHTML = mentorVideos.map(v => `
+    <div class="prev-short-card" onclick="openModal(${v.id})">
+      <video src="${v.video_url}" preload="metadata" muted></video>
       <div class="prev-short-overlay">
         <div class="prev-short-name">${escapeHtml(p?.name || 'Mentor')}</div>
         <div class="prev-short-comment">${escapeHtml(v.comment || v.title)}</div>
@@ -816,10 +868,12 @@ function escapeHtml(str) {
 // ══════════════════════════════════════════
 //  초기화
 // ══════════════════════════════════════════
-initProfile();
-mentorVideos = loadVideos();
-renderVideoPads();
-renderPreview();
+(async function init() {
+  await initProfile();
+  await loadVideos();
+  renderVideoPads();
+  renderPreview();
+})();
 </script>
 </body>
 </html>

@@ -1703,8 +1703,13 @@ body {
 // ══════════════════════════════════════════
 //  데이터
 // ══════════════════════════════════════════
-let mentorApps = JSON.parse(localStorage.getItem('gr-apps') || '[]');
-function saveApps() { localStorage.setItem('gr-apps', JSON.stringify(mentorApps)); }
+let mentorApps = [];
+async function loadApps() {
+  try { mentorApps = await (await fetch('/api/mentors')).json(); } catch(e) { mentorApps = []; }
+}
+async function saveAppRemote(id, updates) {
+  try { await fetch('/api/mentors', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id,...updates}) }); } catch(e) {}
+}
 let applyFiles = { cert:[], port:[] };
 let applyYtUrls = [];
 
@@ -2029,52 +2034,67 @@ function closeVideoPlayer() {
 // ══════════════════════════════════════════
 //  즐겨찾기 (SAVED 탭)
 // ══════════════════════════════════════════
-const FAV_KEY = 'gr-favorites';
-let favItems = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+let favItems = [];
 let favEditMode = false;
-let favCurrentFolder = null; // null = root
+let favCurrentFolder = null;
 let favDragIdx = null;
 
-function saveFavs() { localStorage.setItem(FAV_KEY, JSON.stringify(favItems)); }
+async function loadFavs() {
+  try { favItems = await (await fetch('/api/favorites')).json(); } catch(e) { favItems = []; }
+}
+async function saveFavRemote(item) {
+  try { await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) }); } catch(e) {}
+}
+async function updateFavRemote(items) {
+  try { await fetch('/api/favorites', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ items }) }); } catch(e) {}
+}
+async function deleteFavRemote(id) {
+  try { await fetch(`/api/favorites?id=${encodeURIComponent(id)}`, { method:'DELETE' }); } catch(e) {}
+}
 
 function isFaved(id) { return favItems.some(f => f.id === id); }
 
-function addFavorite(item) {
+async function addFavorite(item) {
   if (isFaved(item.id)) return;
-  item.order = favItems.length;
-  item.folderId = null;
-  favItems.push(item);
-  saveFavs();
+  item.sort_order = favItems.length;
+  item.folder_id = null;
+  const mapped = {
+    id: item.id, type: item.type, title: item.title || null,
+    channel: item.channel || null, mentor_name: item.mentorName || null,
+    thumb: item.thumb || null, video_id: item.videoId || null,
+    video_url: item.videoUrl || null, folder_id: null,
+    sort_order: item.sort_order,
+  };
+  favItems.push({...mapped, folderId: null, order: mapped.sort_order});
+  await saveFavRemote(mapped);
   showToast('즐겨찾기에 추가했어요 ★');
 }
 
-function removeFavorite(id) {
+async function removeFavorite(id) {
   favItems = favItems.filter(f => f.id !== id);
-  // 폴더 삭제 시 하위 아이템도 루트로 이동
-  favItems.forEach(f => { if (f.folderId === id) f.folderId = null; });
-  saveFavs();
+  await deleteFavRemote(id);
   renderSavedGrid();
   showToast('즐겨찾기에서 제거했어요');
 }
 
-function toggleFav(item) {
-  if (isFaved(item.id)) { removeFavorite(item.id); return false; }
-  else { addFavorite(item); return true; }
+async function toggleFav(item) {
+  if (isFaved(item.id)) { await removeFavorite(item.id); return false; }
+  else { await addFavorite(item); return true; }
 }
 
-function createNewFolder() {
+async function createNewFolder() {
   const existingFolders = favItems.filter(f => f.type === 'folder');
   const num = existingFolders.length + 1;
   const folder = {
     id: 'folder-' + Date.now(),
     type: 'folder',
     name: '새 폴더 ' + num,
-    order: favItems.length,
-    folderId: favCurrentFolder,
-    parentId: favCurrentFolder
+    sort_order: favItems.length,
+    folder_id: favCurrentFolder,
+    parent_id: favCurrentFolder,
   };
-  favItems.push(folder);
-  saveFavs();
+  favItems.push({...folder, order: folder.sort_order, folderId: folder.folder_id, parentId: folder.parent_id});
+  await saveFavRemote(folder);
   renderSavedGrid();
   showToast('새 폴더가 생성되었습니다');
 }
@@ -2202,23 +2222,22 @@ function favDragOver(e, el) {
   e.preventDefault();
   el.classList.add('drag-over');
 }
-function favDrop(e, targetIdx, el) {
+async function favDrop(e, targetIdx, el) {
   e.preventDefault();
   el.classList.remove('drag-over');
   const items = favItems
-    .filter(f => (f.folderId || null) === favCurrentFolder)
-    .sort((a,b) => (a.order||0) - (b.order||0));
+    .filter(f => (f.folderId || f.folder_id || null) === favCurrentFolder)
+    .sort((a,b) => (a.order||a.sort_order||0) - (b.order||b.sort_order||0));
   if (favDragIdx === null || favDragIdx === targetIdx) return;
 
   const draggedItem = items[favDragIdx];
   const targetItem = items[targetIdx];
 
-  // 폴더 위에 드롭하면 폴더 안으로 이동
   if (targetItem && targetItem.type === 'folder' && draggedItem.id !== targetItem.id) {
     const orig = favItems.find(f => f.id === draggedItem.id);
     if (orig) {
-      orig.folderId = targetItem.id;
-      saveFavs();
+      orig.folderId = targetItem.id; orig.folder_id = targetItem.id;
+      await updateFavRemote([{ id: orig.id, folder_id: targetItem.id }]);
       renderSavedGrid();
       showToast(`"${targetItem.name}" 폴더로 이동했어요`);
       favDragIdx = null;
@@ -2226,14 +2245,14 @@ function favDrop(e, targetIdx, el) {
     }
   }
 
-  // 같은 레벨에서 순서 변경
   const src = items.splice(favDragIdx, 1)[0];
   items.splice(targetIdx, 0, src);
-  items.forEach((it, i) => {
+  const batch = items.map((it, i) => {
     const orig = favItems.find(f => f.id === it.id);
-    if (orig) orig.order = i;
+    if (orig) { orig.order = i; orig.sort_order = i; }
+    return { id: it.id, sort_order: i };
   });
-  saveFavs();
+  await updateFavRemote(batch);
   renderSavedGrid();
   favDragIdx = null;
 }
@@ -2259,12 +2278,11 @@ function startRenameFav(id) {
   const inp = document.getElementById('ftitle-' + id);
   inp.focus(); inp.select();
 }
-function finishRename(id, type, value) {
+async function finishRename(id, type, value) {
   const item = favItems.find(f => f.id === id);
   if (!item) return;
-  if (type === 'folder') item.name = value.trim() || item.name;
-  else item.title = value.trim() || item.title;
-  saveFavs();
+  if (type === 'folder') { item.name = value.trim() || item.name; await updateFavRemote([{id, name: item.name}]); }
+  else { item.title = value.trim() || item.title; await updateFavRemote([{id, title: item.title}]); }
   renderSavedGrid();
 }
 
@@ -2364,21 +2382,24 @@ function renderYtTags() {
     `<div class="yt-tag"><span>${u.length>32?u.slice(0,32)+'…':u}</span><button onclick="removeYtUrl(${i})">×</button></div>`
   ).join('');
 }
-function submitApply() {
+async function submitApply() {
   const name  = document.getElementById('apName').value.trim();
   const phone = document.getElementById('apPhone').value.trim();
   const spec  = document.getElementById('apSpec').value;
   const career= document.getElementById('apCareer').value;
   const intro = document.getElementById('apIntro').value.trim();
   if (!name||!phone||!spec||!career||!intro) { showToast('모든 항목을 입력해 주세요'); return; }
-  mentorApps.push({
-    id:Date.now(), name, phone, spec, career, intro,
-    ytUrls:[...applyYtUrls],
-    certFiles:[...applyFiles.cert], portFiles:[...applyFiles.port],
-    styles:[], status:'pending',
-    appliedAt:new Date().toLocaleDateString('ko-KR')
-  });
-  saveApps();
+  try {
+    await fetch('/api/mentors', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name, phone, spec, career, intro,
+        ytUrls:[...applyYtUrls],
+        certFiles:[...applyFiles.cert], portFiles:[...applyFiles.port],
+      })
+    });
+    await loadApps();
+  } catch(e) {}
   document.getElementById('applyForm').style.display='none';
   document.getElementById('applyDone').classList.add('show');
 }
@@ -2467,25 +2488,25 @@ function renderAdmin() {
     ).join('');
   }
 }
-function toggleStyle(appId, styleId, checked) {
+async function toggleStyle(appId, styleId, checked) {
   const app = mentorApps.find(a=>a.id===appId);
   if (!app) return;
   app.styles = app.styles||[];
   if (checked) { if (!app.styles.includes(styleId)) app.styles.push(styleId); }
   else app.styles = app.styles.filter(s=>s!==styleId);
-  saveApps();
+  await saveAppRemote(appId, { styles: app.styles });
 }
-function approveApp(id) {
-  const app=mentorApps.find(a=>a.id===id);
-  if(app){app.status='approved';saveApps();renderAdmin();renderGallery();showToast('멘토를 승인했어요!');}
+async function approveApp(id) {
+  await saveAppRemote(id, { status:'approved' });
+  await loadApps(); renderAdmin(); showToast('멘토를 승인했어요!');
 }
-function rejectApp(id) {
-  const app=mentorApps.find(a=>a.id===id);
-  if(app){app.status='rejected';saveApps();renderAdmin();showToast('거절 처리됐어요');}
+async function rejectApp(id) {
+  await saveAppRemote(id, { status:'rejected' });
+  await loadApps(); renderAdmin(); showToast('거절 처리됐어요');
 }
-function revokeApp(id) {
-  const app=mentorApps.find(a=>a.id===id);
-  if(app){app.status='pending';saveApps();renderAdmin();renderGallery();showToast('멘토 자격이 취소됐어요');}
+async function revokeApp(id) {
+  await saveAppRemote(id, { status:'pending' });
+  await loadApps(); renderAdmin(); showToast('멘토 자격이 취소됐어요');
 }
 
 // ══════════════════════════════════════════
@@ -2503,15 +2524,26 @@ function esc(s) {
 // ══════════════════════════════════════════
 //  홈 멘토 데이터 연동 + 숏폼 슬라이더
 // ══════════════════════════════════════════
-function loadMentorStudioProfile() {
-  return JSON.parse(localStorage.getItem('gr-mentor-profile') || 'null');
+let _cachedProfile = null;
+let _cachedMentorVids = [];
+async function loadMentorStudioProfile() {
+  try {
+    const list = await (await fetch('/api/mentor-profile')).json();
+    _cachedProfile = Array.isArray(list) && list.length ? list[0] : null;
+  } catch(e) { _cachedProfile = null; }
+  return _cachedProfile;
 }
-function loadMentorStudioVideos() {
-  return JSON.parse(localStorage.getItem('gr-mentor-videos') || '[]');
+async function loadMentorStudioVideos() {
+  try {
+    const pid = _cachedProfile?.id;
+    if (!pid) { _cachedMentorVids = []; return []; }
+    _cachedMentorVids = await (await fetch(`/api/mentor-videos?mentor_id=${pid}`)).json();
+  } catch(e) { _cachedMentorVids = []; }
+  return _cachedMentorVids;
 }
 
-function renderHomeMentorFromStudio() {
-  const profile = loadMentorStudioProfile();
+async function renderHomeMentorFromStudio() {
+  const profile = await loadMentorStudioProfile();
   if (!profile || !profile.name) return;
 
   // 첫 번째 홈 멘토 카드에 스튜디오 멘토를 동적으로 추가
@@ -2522,11 +2554,11 @@ function renderHomeMentorFromStudio() {
   const existing = scroll.querySelector('.hm-card-studio');
   if (existing) existing.remove();
 
-  const avatarContent = profile.avatar
-    ? `<img src="${profile.avatar}" alt="">`
+  const avatarContent = profile.avatar_url
+    ? `<img src="${profile.avatar_url}" alt="">`
     : `<div class="hm-avatar">${profile.name.substring(0,2).toUpperCase()}</div>`;
-  const avatarHtml = profile.avatar
-    ? `<div class="hm-avatar" style="overflow:hidden;"><img src="${profile.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"></div>`
+  const avatarHtml = profile.avatar_url
+    ? `<div class="hm-avatar" style="overflow:hidden;"><img src="${profile.avatar_url}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px;"></div>`
     : `<div class="hm-avatar">${profile.name.substring(0,1)}</div>`;
 
   const videos = loadMentorStudioVideos();
@@ -2549,9 +2581,9 @@ function renderHomeMentorFromStudio() {
   scroll.insertBefore(card, scroll.firstChild);
 }
 
-function renderHomeShortsSlider() {
-  const profile = loadMentorStudioProfile();
-  const videos = loadMentorStudioVideos();
+async function renderHomeShortsSlider() {
+  const profile = _cachedProfile;
+  const videos = await loadMentorStudioVideos();
   const section = document.getElementById('homeShortsSection');
   const scroll = document.getElementById('homeShortsScroll');
 
@@ -2563,17 +2595,17 @@ function renderHomeShortsSlider() {
   section.style.display = '';
   const mentorName = profile?.name || 'Mentor';
   const avatarHtml = profile?.avatar
-    ? `<img src="${profile.avatar}" alt="">`
+    ? `<img src="${profile.avatar_url}" alt="">`
     : mentorName.substring(0,1);
 
   scroll.innerHTML = videos.map(v => {
     const favId = 'mv-' + v.id;
     const isFav = isFaved(favId);
     return `<div class="hs-card" onclick="playHomeVideo('${v.id}')">
-      <video src="${v.dataUrl}" preload="metadata" muted></video>
+      <video src="${v.video_url}" preload="metadata" muted></video>
       <div class="hs-play-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5,3 19,12 5,21"/></svg></div>
       <button class="btn-fav-star ${isFav?'active':''}"
-        onclick="event.stopPropagation();toggleFavMentor('${v.id}','${esc(v.title||v.comment||'')}','${esc(mentorName)}','${v.dataUrl}',this)">
+        onclick="event.stopPropagation();toggleFavMentor('${v.id}','${esc(v.title||v.comment||'')}','${esc(mentorName)}','${v.video_url}',this)">
         ${isFav ? '★' : '☆'}
       </button>
       <div class="hs-overlay">
@@ -2593,7 +2625,7 @@ function playHomeVideo(id) {
   if (!v) return;
   const modal = document.getElementById('homeVideoModal');
   const vid = document.getElementById('homeModalVideo');
-  vid.src = v.dataUrl;
+  vid.src = v.video_url;
   modal.classList.add('active');
   vid.play();
 }
@@ -2605,9 +2637,12 @@ function closeHomeVideo() {
 }
 
 // 초기화
-renderSavedGrid();
-renderHomeMentorFromStudio();
-renderHomeShortsSlider();
+(async function init() {
+  await Promise.all([loadApps(), loadFavs()]);
+  renderSavedGrid();
+  await renderHomeMentorFromStudio();
+  await renderHomeShortsSlider();
+})();
 </script>
 </body>
 </html>
