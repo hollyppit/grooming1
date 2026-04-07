@@ -1623,13 +1623,13 @@ body {
       <textarea id="apIntro" placeholder="어떤 스타일을 잘 다루시나요? 특기나 강점을 써주세요."></textarea>
     </div>
     <div class="field">
-      <label>자격증 / 수료증</label>
+      <label>증빙자료</label>
       <div class="upload-zone" id="certZone"
            ondragover="zoneDrag(event,'certZone')" ondragleave="zoneDragEnd('certZone')" ondrop="zoneDrop(event,'cert')">
         <input type="file" id="certInput" accept="image/*,.pdf" multiple onchange="handleFiles(this,'cert')">
         <div class="upload-zone-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-        <div class="upload-zone-label">자격증 · 수료증 첨부</div>
-        <div class="upload-zone-sub">IMAGE OR PDF · MULTIPLE OK</div>
+        <div class="upload-zone-label">증빙자료 첨부</div>
+        <div class="upload-zone-sub">사업자등록증 / 자격증 / 수료증 · IMAGE OR PDF</div>
       </div>
       <div class="file-preview-list" id="certPreview"></div>
     </div>
@@ -2415,7 +2415,7 @@ async function submitApply() {
   const spec  = document.getElementById('apSpec').value;
   const career= document.getElementById('apCareer').value;
   const intro = document.getElementById('apIntro').value.trim();
-  if (!name||!phone||!spec||!career||!intro) { showToast('모든 항목을 입력해 주세요'); return; }
+  if (!name || !phone) { showToast('이름과 연락처는 입력해 주세요'); return; }
   try {
     await fetch('/api/mentors', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -2481,7 +2481,7 @@ function renderAdmin() {
         </div>
         <div class="applicant-intro">${esc(a.intro)}</div>
         ${a.ytUrls?.length?`<div class="applicant-links">${a.ytUrls.map(u=>'▶ '+u).join('<br>')}</div>`:''}
-        ${certHtml?`<div class="admin-file-section-label">자격증 · 수료증</div><div class="admin-files-row">${certHtml}</div>`:''}
+        ${certHtml?`<div class="admin-file-section-label">증빙자료</div><div class="admin-files-row">${certHtml}</div>`:''}
         ${portHtml?`<div class="admin-file-section-label">포트폴리오</div><div class="admin-files-row">${portHtml}</div>`:''}
         <div class="style-check-label">커버할 스타일 선택</div>
         <div class="style-check-grid">
