@@ -1851,11 +1851,13 @@ async function runFix() {
   document.getElementById('solutionBody').innerHTML =
     `<div class="solution-card-body">${formatSolution(aiRes)}</div>`;
 
-  // 멘토 추천
-  renderResultMentors(cat, resultMentors);
+  // 멘토 추천 (실패해도 유튜브는 계속)
+  try { renderResultMentors(cat, resultMentors); } catch(e) { console.error('mentor render fail', e); }
 
   // 유튜브 검색
-  await searchYoutube(ytQuery, getMentorsForCat(cat), 'ytLoading', 'ytList');
+  let mentorList = [];
+  try { mentorList = getMentorsForCat(cat); } catch(e) { console.error('mentor list fail', e); }
+  await searchYoutube(ytQuery, mentorList, 'ytLoading', 'ytList');
 }
 
 function buildSystemPrompt(cat, meta) {
@@ -1928,8 +1930,9 @@ function getMentorsForCat(cat) {
     perfume:  ['향수','퍼퓨머리'],
   };
   const keywords = specMap[cat] || [];
+  if (!Array.isArray(mentorApps)) return [];
   return mentorApps.filter(a =>
-    a.status==='approved' &&
+    a && a.status==='approved' &&
     keywords.some(k => (a.spec||'').includes(k))
   );
 }
