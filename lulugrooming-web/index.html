@@ -1165,6 +1165,7 @@ body {
   <div class="video-player-sheet" onclick="event.stopPropagation()">
     <div class="video-player-header">
       <div class="video-player-title" id="playerTitle"></div>
+      <button class="video-player-close" id="playerFavBtn" onclick="togglePlayerFav()" title="즐겨찾기" style="margin-right:6px;font-size:18px;">☆</button>
       <button class="video-player-close" onclick="toggleVideoOrientation()" title="가로/세로 전환" style="margin-right:6px;">⇅</button>
       <button class="video-player-close" onclick="closeVideoPlayer()">✕</button>
     </div>
@@ -2060,7 +2061,7 @@ async function searchYoutube(query, mentors, loadingId, listId) {
       const favId = 'yt-' + v.videoId;
       const isFav = isFaved(favId);
       return `<div class="yt-card" style="position:relative;">
-        <div style="display:flex;cursor:pointer;" onclick="openVideoPlayer('${v.videoId}','${esc(v.title)}')">
+        <div style="display:flex;cursor:pointer;" onclick="openVideoPlayer('${v.videoId}','${esc(v.title)}','${esc(v.channel)}','${v.thumb||''}')">
           <div class="yt-thumb">
             ${v.thumb
               ? `<img class="yt-thumb-img" src="${v.thumb}" alt="" loading="lazy">`
@@ -2089,7 +2090,8 @@ async function searchYoutube(query, mentors, loadingId, listId) {
 }
 
 // ── 영상 플레이어 ──
-function openVideoPlayer(videoId, title) {
+let currentPlayItem = null; // {id,type,title,channel,thumb,videoId,videoUrl,mentorName}
+function openVideoPlayer(videoId, title, channel, thumb) {
   const wrap = document.getElementById('playerWrap');
   const iframe = document.getElementById('playerIframe');
   const video = document.getElementById('playerVideo');
@@ -2097,11 +2099,17 @@ function openVideoPlayer(videoId, title) {
   video.pause(); video.removeAttribute('src'); video.style.display = 'none';
   iframe.style.display = 'block';
   iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-  wrap.classList.remove('portrait'); // 기본 가로, 사용자가 ⇅로 전환
+  wrap.classList.remove('portrait');
+  currentPlayItem = {
+    id: 'yt-' + videoId, type: 'youtube',
+    title, channel: channel || '', thumb: thumb || `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`,
+    videoId
+  };
+  refreshPlayerFavBtn();
   document.getElementById('videoPlayer').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
-function openLocalVideoPlayer(src, title) {
+function openLocalVideoPlayer(src, title, extra) {
   const wrap = document.getElementById('playerWrap');
   const iframe = document.getElementById('playerIframe');
   const video = document.getElementById('playerVideo');
@@ -2114,9 +2122,36 @@ function openLocalVideoPlayer(src, title) {
     if (video.videoHeight > video.videoWidth) wrap.classList.add('portrait');
     else wrap.classList.remove('portrait');
   };
+  const e = extra || {};
+  currentPlayItem = {
+    id: e.id || ('mv-' + (e.videoId || src)),
+    type: 'mentor',
+    title, mentorName: e.mentorName || '', thumb: e.thumb || null,
+    videoId: e.videoId || null, videoUrl: src
+  };
+  refreshPlayerFavBtn();
   document.getElementById('videoPlayer').classList.add('show');
   document.body.style.overflow = 'hidden';
   video.play().catch(()=>{});
+}
+function refreshPlayerFavBtn() {
+  const btn = document.getElementById('playerFavBtn');
+  if (!btn || !currentPlayItem) return;
+  const fav = isFaved(currentPlayItem.id);
+  btn.textContent = fav ? '★' : '☆';
+  btn.style.color = fav ? '#c6f135' : '#fff';
+}
+async function togglePlayerFav() {
+  if (!currentPlayItem) return;
+  const item = currentPlayItem;
+  if (isFaved(item.id)) {
+    await removeFavorite(item.id);
+    showToast('즐겨찾기에서 뺐어요');
+  } else {
+    await addFavorite({ ...item });
+  }
+  refreshPlayerFavBtn();
+  if (document.getElementById('page-gallery')?.classList.contains('active')) renderSavedGrid();
 }
 function toggleVideoOrientation() {
   document.getElementById('playerWrap').classList.toggle('portrait');
@@ -2423,9 +2458,9 @@ function playFavVideo(id) {
   const item = favItems.find(f => f.id === id);
   if (!item) return;
   if (item.type === 'youtube') {
-    openVideoPlayer(item.videoId, item.title);
+    openVideoPlayer(item.videoId, item.title, item.channel, item.thumb);
   } else {
-    openLocalVideoPlayer(item.videoUrl, item.title);
+    openLocalVideoPlayer(item.videoUrl, item.title, { id:item.id, mentorName:item.mentorName, thumb:item.thumb, videoId:item.videoId });
   }
 }
 
@@ -2728,7 +2763,7 @@ function playHomeVideo(id) {
   const videos = loadMentorStudioVideos();
   const v = videos.find(x => x.id === id);
   if (!v) return;
-  openLocalVideoPlayer(v.video_url, v.title || '');
+  openLocalVideoPlayer(v.video_url, v.title || '', { id:'mv-'+v.id, videoId:v.id, mentorName:v.mentor_name||'', thumb:v.thumb||null });
 }
 function closeHomeVideo() { closeVideoPlayer(); }
 
