@@ -1077,19 +1077,21 @@ body {
 /* ── 비디오 플레이어 모달 ── */
 .video-player-overlay {
   display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,0.88); backdrop-filter:blur(8px);
-  z-index:300; align-items:flex-end; justify-content:center;
+  background:rgba(0,0,0,0.92); backdrop-filter:blur(8px);
+  z-index:300; align-items:center; justify-content:center;
+  padding:20px;
 }
 .video-player-overlay.show { display:flex; }
 .video-player-sheet {
-  width:100%; max-width:480px;
-  background:var(--s1); border-radius:20px 20px 0 0;
-  border:1px solid var(--border); border-bottom:none;
-  overflow:hidden; animation:slideUp 0.35s cubic-bezier(0.32,0.72,0,1);
+  width:100%; max-width:440px;
+  background:var(--s1); border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden; animation:popIn 0.25s cubic-bezier(0.32,0.72,0,1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
-@keyframes slideUp {
-  from { transform:translateY(100%); }
-  to   { transform:translateY(0); }
+@keyframes popIn {
+  from { transform:scale(0.92); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
 }
 .video-player-header {
   padding:14px 18px; display:flex; align-items:center;
