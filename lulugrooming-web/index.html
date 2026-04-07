@@ -1139,7 +1139,6 @@ body {
   <div class="brand">LULU <em>GROOMING</em><span class="brand-dot"></span></div>
   <div class="topbar-right">
     <a class="btn-admin-link" href="mentor.html" style="text-decoration:none;">Studio</a>
-    <button class="btn-admin-link" onclick="switchTab('admin')">Admin</button>
   </div>
 </div>
 
@@ -1556,6 +1555,11 @@ body {
 
   </div><!-- /result-page -->
 
+  <!-- 관리자 진입 (희미한 링크) -->
+  <div style="text-align:center; padding:40px 0 100px; opacity:0.18;">
+    <button onclick="switchTab('admin')" style="background:none; border:none; color:var(--text3); font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; cursor:pointer; text-transform:uppercase;">· admin ·</button>
+  </div>
+
 </div><!-- /page-fix -->
 
 <!-- ══════════════════════════════
@@ -1709,9 +1713,6 @@ body {
   </button>
   <button class="tab-btn" id="tab-apply" onclick="switchTab('apply')">
     <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 00-16 0"/></svg></span><span>Mentor</span>
-  </button>
-  <button class="tab-btn" id="tab-admin" onclick="switchTab('admin')">
-    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span><span>Admin</span>
   </button>
 </nav>
 
