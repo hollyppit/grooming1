@@ -1756,7 +1756,7 @@ function selectCat(cat, el) {
   renderSelSummary();
 }
 
-// 옵션 칩 클릭 (단일 선택 per group, 다중 선택 허용 그룹도 있음)
+// 옵션 칩 클릭 (모든 그룹 다중 선택)
 document.addEventListener('click', function(e) {
   const chip = e.target.closest('.opt-chip');
   if (!chip) return;
@@ -1764,35 +1764,43 @@ document.addEventListener('click', function(e) {
   const val   = chip.dataset.val;
   if (!group || !val) return;
 
-  // 같은 group 내 다른 칩 해제
-  document.querySelectorAll(`.opt-chip[data-group="${group}"]`).forEach(c => c.classList.remove('sel'));
-  chip.classList.toggle('sel'); // 이미 선택된 거 다시 누르면 해제
+  chip.classList.toggle('sel');
+  const arr = Array.isArray(selections[group]) ? selections[group] : [];
   if (chip.classList.contains('sel')) {
-    selections[group] = val;
+    if (!arr.includes(val)) arr.push(val);
+    selections[group] = arr;
   } else {
-    delete selections[group];
+    const next = arr.filter(v => v !== val);
+    if (next.length) selections[group] = next;
+    else delete selections[group];
   }
   renderSelSummary();
 });
 
 function renderSelSummary() {
   const el = document.getElementById('selSummary');
-  const entries = Object.entries(selections);
-  if (!entries.length) {
-    el.innerHTML = '';
-    return;
+  const tags = [];
+  for (const [g, v] of Object.entries(selections)) {
+    if (Array.isArray(v)) {
+      v.forEach(item => tags.push({ g, v: item }));
+    } else {
+      tags.push({ g, v });
+    }
   }
-  el.innerHTML = entries.map(([g, v]) =>
+  if (!tags.length) { el.innerHTML = ''; return; }
+  el.innerHTML = tags.map(({g, v}) =>
     `<div class="sel-tag">
       <span>${v}</span>
-      <span class="tag-x" onclick="removeTag('${g}')">×</span>
+      <span class="tag-x" onclick="removeTag('${g}','${v.replace(/'/g,"\\'")}')">×</span>
     </div>`
   ).join('');
 }
 
-function removeTag(group) {
-  delete selections[group];
-  document.querySelectorAll(`.opt-chip[data-group="${group}"]`).forEach(c => c.classList.remove('sel'));
+function removeTag(group, val) {
+  const arr = Array.isArray(selections[group]) ? selections[group].filter(v => v !== val) : [];
+  if (arr.length) selections[group] = arr;
+  else delete selections[group];
+  document.querySelector(`.opt-chip[data-group="${group}"][data-val="${val}"]`)?.classList.remove('sel');
   renderSelSummary();
 }
 
@@ -1801,7 +1809,7 @@ async function runFix() {
   const cat  = currentCat;
   const meta = CAT_META[cat];
   const memo = document.getElementById(`${cat}-memo`)?.value?.trim() || '';
-  const selArr = Object.entries(selections).map(([g,v]) => v);
+  const selArr = Object.values(selections).flatMap(v => Array.isArray(v) ? v : [v]);
 
   if (!selArr.length && !memo) {
     showToast('하나 이상 선택하거나 직접 입력해 주세요');
