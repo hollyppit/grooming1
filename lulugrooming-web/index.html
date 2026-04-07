@@ -1083,7 +1083,7 @@ body {
 .video-player-overlay.show { display:flex; }
 .video-player-sheet {
   width:100%; height:100%;
-  background:#000;
+  background:#000; position:relative;
   display:flex; flex-direction:column;
   animation:popIn 0.25s cubic-bezier(0.32,0.72,0,1);
 }
@@ -1120,6 +1120,24 @@ body {
   border:0; background:#000;
 }
 .video-player-wrap video { object-fit:contain; }
+.player-fab-fav {
+  position:absolute; z-index:10;
+  top:max(72px, calc(env(safe-area-inset-top) + 60px));
+  right:14px;
+  width:52px; height:52px; border-radius:50%;
+  background:rgba(0,0,0,0.72); border:2px solid rgba(255,255,255,0.85);
+  color:#fff; font-size:26px; line-height:1; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 20px rgba(0,0,0,0.5);
+  transition:transform 0.15s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+.player-fab-fav:hover { transform:scale(1.06); }
+.player-fab-fav.active {
+  background:#c6f135; color:#0a0a0a; border-color:#c6f135;
+}
+@media (min-width:720px) {
+  .player-fab-fav { top:74px; right:18px; width:46px; height:46px; font-size:22px; }
+}
 /* portrait (Shorts/세로) 모드: 모바일은 화면 가득 (iframe도 contain 효과를 위해 max-width로 제한) */
 .video-player-wrap.portrait iframe,
 .video-player-wrap.portrait video {
@@ -1165,10 +1183,10 @@ body {
   <div class="video-player-sheet" onclick="event.stopPropagation()">
     <div class="video-player-header">
       <div class="video-player-title" id="playerTitle"></div>
-      <button class="video-player-close" id="playerFavBtn" onclick="togglePlayerFav()" title="즐겨찾기" style="margin-right:6px;font-size:18px;">☆</button>
       <button class="video-player-close" onclick="toggleVideoOrientation()" title="가로/세로 전환" style="margin-right:6px;">⇅</button>
       <button class="video-player-close" onclick="closeVideoPlayer()">✕</button>
     </div>
+    <button class="player-fab-fav" id="playerFavBtn" onclick="togglePlayerFav()" title="즐겨찾기">☆</button>
     <div class="video-player-wrap" id="playerWrap">
       <iframe id="playerIframe" src="" frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -2139,7 +2157,7 @@ function refreshPlayerFavBtn() {
   if (!btn || !currentPlayItem) return;
   const fav = isFaved(currentPlayItem.id);
   btn.textContent = fav ? '★' : '☆';
-  btn.style.color = fav ? '#c6f135' : '#fff';
+  btn.classList.toggle('active', fav);
 }
 async function togglePlayerFav() {
   if (!currentPlayItem) return;
