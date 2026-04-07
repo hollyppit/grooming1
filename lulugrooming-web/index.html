@@ -2068,7 +2068,18 @@ let favCurrentFolder = null;
 let favDragIdx = null;
 
 async function loadFavs() {
-  try { const j = await (await fetch('/api/favorites')).json(); favItems = Array.isArray(j) ? j : []; } catch(e) { favItems = []; }
+  try {
+    const j = await (await fetch('/api/favorites')).json();
+    favItems = Array.isArray(j) ? j.map(f => ({
+      ...f,
+      videoId: f.videoId || f.video_id,
+      videoUrl: f.videoUrl || f.video_url,
+      mentorName: f.mentorName || f.mentor_name,
+      folderId: f.folderId ?? f.folder_id,
+      parentId: f.parentId ?? f.parent_id,
+      order: f.order ?? f.sort_order,
+    })) : [];
+  } catch(e) { favItems = []; }
 }
 async function saveFavRemote(item) {
   try { await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) }); } catch(e) {}
