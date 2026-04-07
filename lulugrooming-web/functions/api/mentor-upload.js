@@ -41,8 +41,8 @@ export async function onRequestPost({ env, request }) {
       {
         method: 'POST',
         headers: {
-          'apikey': env.SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+          'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
           'Content-Type': file.type,
           'x-upsert': 'true',
         },

@@ -11,8 +11,8 @@ const CORS = {
 async function sb(env, path, opts = {}) {
   const res = await fetch(`${env.SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
-      'apikey': env.SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+      'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+      'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
       'Content-Type': 'application/json',
       'Prefer': opts.prefer || 'return=representation',
       ...opts.headers,
