@@ -1707,7 +1707,7 @@ body {
 // ══════════════════════════════════════════
 let mentorApps = [];
 async function loadApps() {
-  try { mentorApps = await (await fetch('/api/mentors')).json(); } catch(e) { mentorApps = []; }
+  try { const j = await (await fetch('/api/mentors')).json(); mentorApps = Array.isArray(j) ? j : []; } catch(e) { mentorApps = []; }
 }
 async function saveAppRemote(id, updates) {
   try { await fetch('/api/mentors', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id,...updates}) }); } catch(e) {}
@@ -2050,7 +2050,7 @@ let favCurrentFolder = null;
 let favDragIdx = null;
 
 async function loadFavs() {
-  try { favItems = await (await fetch('/api/favorites')).json(); } catch(e) { favItems = []; }
+  try { const j = await (await fetch('/api/favorites')).json(); favItems = Array.isArray(j) ? j : []; } catch(e) { favItems = []; }
 }
 async function saveFavRemote(item) {
   try { await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(item) }); } catch(e) {}
