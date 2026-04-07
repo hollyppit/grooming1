@@ -157,14 +157,15 @@ body {
 .cat-bar::-webkit-scrollbar { display:none; }
 .cat-btn {
   flex-shrink:0;
-  padding:0 16px; height:44px;
+  padding:0 18px; height:56px;
   background:none; border:none; border-bottom:2px solid transparent;
   font-family:'DM Mono',monospace;
-  font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+  font-size:14px; letter-spacing:1.5px; text-transform:uppercase;
   color:var(--text3); cursor:pointer; transition:all 0.2s;
-  display:flex; align-items:center; gap:6px; white-space:nowrap;
+  display:flex; align-items:center; gap:8px; white-space:nowrap;
 }
-.cat-btn .cat-ico { font-size:14px; }
+.cat-btn .cat-ico { font-size:18px; }
+.cat-btn .cat-ico svg { width:22px; height:22px; }
 .cat-btn.active { color:var(--lime); border-bottom-color:var(--lime); }
 
 /* 패널 컨테이너 */
@@ -175,45 +176,46 @@ body {
 /* 섹션 타이틀 */
 .panel-section-title {
   font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:2px; text-transform:uppercase;
-  color:var(--text3); margin-bottom:10px;
-  display:flex; align-items:center; gap:8px;
+  font-size:13px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text2); margin-bottom:14px; font-weight:600;
+  display:flex; align-items:center; gap:10px;
 }
 .panel-section-title::after {
   content:''; flex:1; height:1px; background:var(--border);
 }
 
 /* 옵션 칩 그룹 */
-.opt-group { margin-bottom:18px; }
+.opt-group { margin-bottom:24px; }
 .opt-chips {
-  display:flex; flex-wrap:wrap; gap:6px;
+  display:flex; flex-wrap:wrap; gap:10px;
 }
 .opt-chip {
-  padding:7px 14px;
-  background:var(--s1); border:1px solid var(--border);
-  border-radius:999px; font-size:12px; color:var(--text2);
-  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+  padding:13px 22px;
+  background:var(--s1); border:1.5px solid var(--border);
+  border-radius:999px; font-size:16px; font-weight:500;
+  color:var(--text); cursor:pointer; transition:all 0.2s; white-space:nowrap;
 }
+.opt-chip:hover { border-color:rgba(198,241,53,0.5); }
 .opt-chip.sel {
-  background:rgba(198,241,53,0.1);
-  border-color:rgba(198,241,53,0.4);
-  color:var(--lime); font-weight:500;
+  background:rgba(198,241,53,0.15);
+  border-color:var(--lime);
+  color:var(--lime); font-weight:700;
 }
 
 /* 직접 입력 인풋 */
 .direct-input-wrap { margin-bottom:18px; position:relative; }
 .direct-input {
-  width:100%; padding:12px 14px 12px 38px;
-  background:var(--s1); border:1px solid var(--border);
+  width:100%; padding:16px 16px 16px 44px;
+  background:var(--s1); border:1.5px solid var(--border);
   border-radius:var(--radius-s); color:var(--text);
-  font-family:'Noto Sans KR',sans-serif; font-size:13px;
+  font-family:'Noto Sans KR',sans-serif; font-size:15px;
   outline:none; transition:border-color 0.2s;
 }
 .direct-input:focus { border-color:rgba(198,241,53,0.5); }
-.direct-input::placeholder { color:var(--text3); font-size:12px; }
+.direct-input::placeholder { color:var(--text3); font-size:14px; }
 .direct-input-icon {
-  position:absolute; left:13px; top:50%; transform:translateY(-50%);
-  font-size:14px; pointer-events:none; opacity:0.5;
+  position:absolute; left:16px; top:50%; transform:translateY(-50%);
+  font-size:16px; pointer-events:none; opacity:0.6;
 }
 
 /* 선택 요약 태그 */
@@ -222,17 +224,17 @@ body {
   min-height:28px;
 }
 .sel-tag {
-  display:flex; align-items:center; gap:5px;
-  padding:4px 10px; background:var(--s2);
-  border:1px solid var(--border2); border-radius:6px;
-  font-size:11px; color:var(--text2); animation:tagPop 0.2s ease;
+  display:flex; align-items:center; gap:7px;
+  padding:8px 14px; background:var(--s2);
+  border:1px solid var(--border2); border-radius:8px;
+  font-size:14px; color:var(--text); animation:tagPop 0.2s ease;
 }
 @keyframes tagPop {
   from { transform:scale(0.85); opacity:0; }
   to   { transform:scale(1); opacity:1; }
 }
 .sel-tag .tag-x {
-  color:var(--text3); cursor:pointer; font-size:13px; line-height:1;
+  color:var(--text3); cursor:pointer; font-size:16px; line-height:1;
   transition:color 0.15s;
 }
 .sel-tag .tag-x:hover { color:var(--red); }
