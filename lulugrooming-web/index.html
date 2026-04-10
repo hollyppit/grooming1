@@ -2253,7 +2253,7 @@ async function addFavorite(item) {
     video_url: item.videoUrl || null, folder_id: null,
     sort_order: item.sort_order,
   };
-  favItems.push({...mapped, folderId: null, order: mapped.sort_order});
+  favItems.push({...mapped, videoId: mapped.video_id, videoUrl: mapped.video_url, mentorName: mapped.mentor_name, folderId: null, order: mapped.sort_order});
   await saveFavRemote(mapped);
   showToast('즐겨찾기에 추가했어요 ★');
 }
